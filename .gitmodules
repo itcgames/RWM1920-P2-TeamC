@@ -1,0 +1,15 @@
+[submodule "Assets/Plugins/submodules/RWM1920-C00218004"]
+	path = Assets/Plugins/submodules/RWM1920-C00218004
+	url = https://github.com/itcgames/RWM1920-C00218004.git
+[submodule "Assets/Plugins/submodules/RWM1920-C00214190"]
+	path = Assets/Plugins/submodules/RWM1920-C00214190
+	url = https://github.com/itcgames/RWM1920-C00214190.git
+[submodule "Assets/Plugins/submodules/RWM1920-C00220950"]
+	path = Assets/Plugins/submodules/RWM1920-C00220950
+	url = https://github.com/itcgames/RWM1920-C00220950.git
+[submodule "Assets/Plugins/submodules/RWM1920-C00217820"]
+	path = Assets/Plugins/submodules/RWM1920-C00217820
+	url = https://github.com/itcgames/RWM1920-C00217820.git
+[submodule "Assets/Plugins/submodules/RWM1920-C00217019"]
+	path = Assets/Plugins/submodules/RWM1920-C00217019
+	url = https://github.com/itcgames/RWM1920-C00217019.git
