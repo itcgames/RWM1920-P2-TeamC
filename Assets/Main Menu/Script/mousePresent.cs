@@ -5,15 +5,15 @@ using UnityEngine.EventSystems; // 1
 
 public class mousePresent : MonoBehaviour
 {
-    private Vector3 startPos;
+    private Vector3 m_startPos;
     void Start()
     {
 
-        startPos = transform.position;
+        m_startPos = transform.position;
     }
 
     void Update(){
-        transform.position = startPos;
+        transform.position = m_startPos;
 
     }
 
