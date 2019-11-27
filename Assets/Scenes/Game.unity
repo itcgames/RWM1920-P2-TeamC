@@ -829,7 +829,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2144036883}
-        m_MethodName: switchPausePanel
+        m_MethodName: SwitchPausePanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1002,4 +1002,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b1e0eded94de8418e8345ce41832d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puasePanel: {fileID: 1970006145}
+  m_pausePanel: {fileID: 1970006145}

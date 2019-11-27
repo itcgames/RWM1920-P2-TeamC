@@ -11,11 +11,11 @@ public class PauseHandler : MonoBehaviour
     {
         if (Input.GetKeyDown("escape"))
         {
-            switchPausePanel();
+            SwitchPausePanel();
         }
     }
 
-    public void switchPausePanel()
+    public void SwitchPausePanel()
     {
         m_pausePanel.SetActive(!m_pausePanel.activeSelf);
     }
