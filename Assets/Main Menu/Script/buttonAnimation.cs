@@ -7,48 +7,53 @@ public class buttonAnimation : MonoBehaviour
 , IPointerEnterHandler
 , IPointerExitHandler
 {
-	private bool mouse_over = false;
-	private bool headingLeft = true;
+	private bool mouseOver = false;
 	private Vector3 startPos;
 	private Vector3 offsetPos;
-	private int offset = 20;
-	private int secondsMoving = 1;
+	private int offset = -20;//Change this to set the offset Amount.
 
-	void Start(){
+    void Start(){
 		startPos = transform.position;
 		offsetPos = startPos;
 		offsetPos.x = offsetPos.x + offset;
-	}
+
+    }
 
 	void Update(){
-		if (mouse_over){
+
+
+
+        if (mouseOver){//Moves to the right if the mouse is hovering, to the OffsetPos 
 			handleAnimation();
 		}
-		else{
+		else{//Else returns to the left to the startPos
 			resetAnimation();
 		}
 
+
+    }
+
+	public void OnPointerEnter(PointerEventData eventData)
+    {//When the Mouse is over the UI Element area. It uses it's childs invisible larger area to determine this
+        mouseOver = true;
+        
 	}
 
-	public void OnPointerEnter(PointerEventData eventData){
-		mouse_over = true;
-	}
+	public void OnPointerExit(PointerEventData eventData){//When the Mouse has exited the UI Element area. It uses it's childs invisible larger area to determine this
 
-	public void OnPointerExit(PointerEventData eventData){
-		mouse_over = false;
-	}
+        mouseOver = false;
+    }
 
 	 void handleAnimation(){
-		if(transform.position.x < offsetPos.x){
-			transform.position = transform.position + new Vector3(1,0,0) ;//(offset/(60*secondsMoving), 0, 0);
-			Debug.Log("Hi");
+		if(transform.position.x != offsetPos.x){
+         
+            transform.position = transform.position - new Vector3(1,0,0) ;
 		}
 
 	}
 	 void resetAnimation(){
-		if(transform.position.x > startPos.x){
-			//GameObject.transform.position.x += offset/(60*secondsMoving);
-			transform.position = transform.position - new Vector3(1,0,0) ;//(offset/(60*secondsMoving), 0, 0);
+		if(transform.position.x < startPos.x){
+			transform.position = transform.position + new Vector3(1,0,0) ;
 		}
 
 	}
