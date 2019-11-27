@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PauseHandler : MonoBehaviour
 {
-    public GameObject puasePanel;
+    public GameObject m_pausePanel;
 
     // Update is called once per frame
     void Update()
@@ -17,6 +17,6 @@ public class PauseHandler : MonoBehaviour
 
     public void switchPausePanel()
     {
-        puasePanel.SetActive(!puasePanel.activeSelf);
+        m_pausePanel.SetActive(!m_pausePanel.activeSelf);
     }
 }
