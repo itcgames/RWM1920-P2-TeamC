@@ -9,7 +9,7 @@ public class buttonAnimation : MonoBehaviour
 	private Vector3 m_offsetPos;
 	private int m_offset = -20;//Change this to set the offset Amount.
     private  mousePresent m_script;
-
+    
     void Start()
     {
         m_startPos = transform.position;
@@ -24,21 +24,24 @@ public class buttonAnimation : MonoBehaviour
         {//Moves to the right if the mouse is hovering, to the OffsetPos 
         	HandleAnimation();
         }
-        else{//Else returns to the left to the startPos
+        else
+        {//Else returns to the left to the startPos
         	ResetAnimation();
         }
     }
-
-	 void HandleAnimation()
+    
+    void HandleAnimation()
     {
-		if(transform.position.x != m_offsetPos.x){        
+		if(transform.position.x != m_offsetPos.x)
+        {        
             transform.position = transform.position - new Vector3(5,0,0) ;
 		}
-	}
-
-	 void ResetAnimation()
+    }
+    
+    void ResetAnimation()
     {
-		if(transform.position.x < m_startPos.x){
+		if(transform.position.x < m_startPos.x)
+        {
 			transform.position = transform.position + new Vector3(5,0,0) ;
 		}
 	}
