@@ -7,8 +7,6 @@ public class loadScene : MonoBehaviour
 {
     public void LoadAScene(string t_scene)
     {
-        Debug.Log("Entered Function");
         SceneManager.LoadScene(t_scene, LoadSceneMode.Single);
-        Debug.Log("FInished Function");
     }
 }
