@@ -40,6 +40,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interactive Balloon
       objectReference: {fileID: 0}
+    - target: {fileID: 4323837175049495405, guid: 433efe2ebcb72b44bbc33b6a3ea0d00f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Balloon
+      objectReference: {fileID: 0}
     - target: {fileID: 8046066177017723469, guid: 433efe2ebcb72b44bbc33b6a3ea0d00f,
         type: 3}
       propertyPath: m_LocalPosition.x

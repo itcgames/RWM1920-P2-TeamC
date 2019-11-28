@@ -15,12 +15,14 @@ public class ComponentInteractionScript : MonoBehaviour
     cakeslice.Outline outlineController;
 
     private bool m_selected;
+    [System.NonSerialized]
+    public bool m_rightClicked;
 
     // Start is called before the first frame update
     void Start()
     {
         outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
-
+        m_rightClicked = false;
         m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
@@ -37,7 +39,13 @@ public class ComponentInteractionScript : MonoBehaviour
             {
                 MoveComponent();
             }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                HandleComponentAlteration();
+            }
         }
+        
         if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
         {
             DeselectComponent();
@@ -68,6 +76,14 @@ public class ComponentInteractionScript : MonoBehaviour
         if (!m_selected)
         {
             SelectComponent();
+        }
+    }
+
+    private void OnMouseOver()
+    {
+        if (!m_selected && Input.GetMouseButtonDown(1))
+        {
+            m_rightClicked = true;
         }
     }
     private void OnMouseDown()
@@ -110,14 +126,51 @@ public class ComponentInteractionScript : MonoBehaviour
     {
         m_selected = true;
         outlineController.eraseRenderer = false;
-        //Debug.Log("selected");
     }
 
     private void DeselectComponent()
     {
         m_selected = false;
         outlineController.eraseRenderer = true;
-        //Debug.Log("DEselected");
+    }
+
+    private void HandleComponentAlteration()
+    {
+        string tag = "";
+        if (gameObject.transform.parent != null)
+        {
+            tag = gameObject.transform.parent.tag;
+        }
+        else
+        {
+            tag = gameObject.tag;
+        }
+
+
+        if (tag == "Balloon")
+        {
+            var interactiveComps = FindObjectsOfType<ComponentInteractionScript>();
+            bool anchorSet = false;
+            BalloonController balloon = gameObject.GetComponentInChildren<BalloonController>();
+
+            foreach (var comp in interactiveComps)
+            {
+                if (comp.m_rightClicked)
+                {
+                    balloon.SetAnchor(comp.gameObject);
+                    comp.m_rightClicked = false;
+                    anchorSet = true;
+                    break;
+                }
+            }
+            if (!anchorSet)
+            {
+                GameObject anchor = new GameObject("Anchor");
+                Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
+                balloon.SetAnchor(anchor);
+            }
+        }
     }
 
     private void SetClickStartPosOnObject()
