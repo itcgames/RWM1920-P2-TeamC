@@ -11,14 +11,13 @@ public class EndpointScript : MonoBehaviour
         m_playerTouching = false;
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if ((collision.gameObject.name == "Player" || collision.gameObject.tag == "Player") && !m_playerTouching)
         {
             m_playerTouching = true;
-            // popup window here
             m_particles.Play();
+            Instantiate(Resources.Load<GameObject>("Prefabs/Level Complete Panel"));
         }
     }
 }
