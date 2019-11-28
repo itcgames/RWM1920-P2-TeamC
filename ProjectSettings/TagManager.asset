@@ -9,6 +9,9 @@ TagManager:
   - Fan
   - WreckingBall
   - Cannon
+  - Start
+  - Endpoint
+  - LevelCompletePanel
   layers:
   - Default
   - TransparentFX
@@ -18,8 +21,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Player
+  - Test
   - 
   - 
   - 
@@ -45,4 +48,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Objects
+    uniqueID: 3062227937
+    locked: 0
+  - name: Player
+    uniqueID: 2484093215
     locked: 0
