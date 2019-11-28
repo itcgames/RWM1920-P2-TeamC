@@ -8,8 +8,6 @@ public class optionTransitionControl : MonoBehaviour
     private Vector3 m_inView;
     private Vector3 m_outOfView;
     private int m_offset = 1000;
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +17,7 @@ public class optionTransitionControl : MonoBehaviour
         transform.position = m_outOfView;
     }
 
-    public void setTransition(bool t_transition)
+    public void SetTransition(bool t_transition)
     {
         m_optionInView = t_transition;
     }
@@ -29,15 +27,15 @@ public class optionTransitionControl : MonoBehaviour
     {
         if (m_optionInView == false)
         {
-            transitionOut();
+            TransitionOut();
         }
         else
         {
-            transitionIn();
+            TransitionIn();
         }
     }
 
-    void transitionOut()
+    void TransitionOut()
     {
         if (transform.position.y < m_outOfView.y)
         {
@@ -45,7 +43,7 @@ public class optionTransitionControl : MonoBehaviour
         }
     }
 
-    void transitionIn()
+    void TransitionIn()
     {
         if (transform.position.y > m_inView.y)
         {

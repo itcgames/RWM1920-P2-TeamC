@@ -7,15 +7,15 @@ public class exitOptionButton : MonoBehaviour
 , IPointerEnterHandler
 , IPointerExitHandler
 {
-    private UIController script;
+    private UIController m_script;
     void Start()
     {
-        script = transform.parent.parent.gameObject.GetComponent<UIController>();
+        m_script = transform.parent.parent.gameObject.GetComponent<UIController>();
     }
 
-    public void optionPressed()
+    public void OptionPressed()
     {
-        script.exitOptionButtonPressed();
+        m_script.ExitOptionButtonPressed();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

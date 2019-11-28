@@ -17,7 +17,7 @@ public class menuTransitionControl : MonoBehaviour
         m_outOfView.y = m_outOfView.y - m_offset;
     }
 
-    public void setTransition(bool t_transition)
+    public void SetTransition(bool t_transition)
     {
         m_menuInView = t_transition;
     }
@@ -27,15 +27,15 @@ public class menuTransitionControl : MonoBehaviour
     {
         if (m_menuInView == false)
         {
-            transitionOut();
+            TransitionOut();
         }
         else
         {
-            transitionIn();
+            TransitionIn();
         }
     }
 
-    void transitionOut()
+    void TransitionOut()
     {
         if (transform.position.y > m_outOfView.y)
         {
@@ -43,12 +43,11 @@ public class menuTransitionControl : MonoBehaviour
         }
     }
 
-    void transitionIn()
+    void TransitionIn()
     {
         if (transform.position.y < m_inView.y)
         {
             transform.position = transform.position + new Vector3(0, 20, 0);
         }
-
     }
 }

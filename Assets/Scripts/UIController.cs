@@ -7,26 +7,26 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     private bool m_menuInView = true;
     private bool m_optionsInView = false;
-    public void optionButtonPressed()
+    public void OptionButtonPressed()
     {
         m_menuInView = false;
         m_optionsInView = true;
-        setTransitions();
+        SetTransitions();
     }
 
-    public void exitOptionButtonPressed()
+    public void ExitOptionButtonPressed()
     {
         m_menuInView = true;
         m_optionsInView = false;
-        setTransitions();
+        SetTransitions();
     }
 
-    void setTransitions()
+    void SetTransitions()
     { 
         menuTransitionControl menuControl = transform.GetChild(1).GetComponent<menuTransitionControl>();
-        menuControl.setTransition(m_menuInView);
+        menuControl.SetTransition(m_menuInView);
 
         optionTransitionControl optionControl = transform.GetChild(2).GetComponent<optionTransitionControl>();
-        optionControl.setTransition(m_optionsInView);
+        optionControl.SetTransition(m_optionsInView);
     }
 }
