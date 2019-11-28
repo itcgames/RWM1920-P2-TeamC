@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems; // 1
+using UnityEngine.EventSystems; 
 
 public class mousePresent : MonoBehaviour
 , IPointerEnterHandler
@@ -16,7 +16,6 @@ public class mousePresent : MonoBehaviour
 
 	public void OnPointerEnter(PointerEventData eventData){//When the Mouse is over the UI Element area
         m_mouseHere = true;
-
     }
 
     public void OnPointerExit(PointerEventData eventData)

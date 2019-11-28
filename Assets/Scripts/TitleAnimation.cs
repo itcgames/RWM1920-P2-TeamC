@@ -26,7 +26,6 @@ public class TitleAnimation : MonoBehaviour
         {
             m_count = 120;//Two seconds. One to reach back to the start point, Another to move past it.
             m_offsetPerFrame = m_offsetPerFrame * -1;
-        }
-        
+        } 
     }
 }

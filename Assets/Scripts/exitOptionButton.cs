@@ -11,7 +11,6 @@ public class exitOptionButton : MonoBehaviour
     void Start()
     {
         script = transform.parent.parent.gameObject.GetComponent<UIController>();
-
     }
 
     public void optionPressed()
@@ -23,12 +22,10 @@ public class exitOptionButton : MonoBehaviour
     {//When the Mouse is over the UI Element area
 
         transform.localScale = new Vector2(1.2f, 1.2f);
-
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {//When the Mouse has exited the UI Element area
-
         transform.localScale = new Vector2(1f, 1f);
     }
 }

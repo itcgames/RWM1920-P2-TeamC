@@ -13,7 +13,6 @@ public class birdShadowAnimation : MonoBehaviour
         m_startPos = transform.position;
         m_birdSpeed = new Vector3( 50, -50, 0 );
         m_offsetTime = m_offsetTime * 60;
-        
     }
 
     // Update is called once per frame

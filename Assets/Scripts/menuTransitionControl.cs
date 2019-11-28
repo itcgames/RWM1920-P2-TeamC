@@ -15,7 +15,6 @@ public class menuTransitionControl : MonoBehaviour
         m_inView = transform.position;
         m_outOfView = m_inView;
         m_outOfView.y = m_outOfView.y - m_offset;
-  
     }
 
     public void setTransition(bool t_transition)
