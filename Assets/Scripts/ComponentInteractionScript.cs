@@ -12,7 +12,7 @@ public class ComponentInteractionScript : MonoBehaviour
     private bool m_click;
     private bool m_dragged;
     private float m_mouseDownTime;
-    cakeslice.Outline outlineController;
+    cakeslice.Outline m_outlineController;
 
     private bool m_selected;
     [System.NonSerialized]
@@ -23,7 +23,7 @@ public class ComponentInteractionScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
+        m_outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
         m_rightClicked = false;
         m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
@@ -47,7 +47,7 @@ public class ComponentInteractionScript : MonoBehaviour
                 HandleComponentAlteration();
             }
         }
-        
+
         if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
         {
             DeselectComponent();
@@ -66,7 +66,6 @@ public class ComponentInteractionScript : MonoBehaviour
 
         Vector2 mousePos;
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
 
         gameObject.transform.localPosition = new Vector2(mousePos.x - m_clickStartPosX, mousePos.y - m_clickStartPosY);
     }
@@ -127,13 +126,13 @@ public class ComponentInteractionScript : MonoBehaviour
     private void SelectComponent()
     {
         m_selected = true;
-        outlineController.eraseRenderer = false;
+        m_outlineController.eraseRenderer = false;
     }
 
     private void DeselectComponent()
     {
         m_selected = false;
-        outlineController.eraseRenderer = true;
+        m_outlineController.eraseRenderer = true;
     }
 
     private void HandleComponentAlteration()
@@ -147,7 +146,6 @@ public class ComponentInteractionScript : MonoBehaviour
         {
             tag = gameObject.tag;
         }
-
 
         if (tag == "Balloon")
         {
@@ -170,7 +168,7 @@ public class ComponentInteractionScript : MonoBehaviour
                 if (m_anchor != null)
                 {
                     Destroy(m_anchor);
-                }                
+                }
                 m_anchor = new GameObject("Anchor");
                 Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
