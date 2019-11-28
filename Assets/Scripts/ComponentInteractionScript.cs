@@ -18,6 +18,8 @@ public class ComponentInteractionScript : MonoBehaviour
     [System.NonSerialized]
     public bool m_rightClicked;
 
+    private GameObject m_anchor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -165,10 +167,14 @@ public class ComponentInteractionScript : MonoBehaviour
             }
             if (!anchorSet)
             {
-                GameObject anchor = new GameObject("Anchor");
+                if (m_anchor != null)
+                {
+                    Destroy(m_anchor);
+                }                
+                m_anchor = new GameObject("Anchor");
                 Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
-                balloon.SetAnchor(anchor);
+                m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
+                balloon.SetAnchor(m_anchor);
             }
         }
     }
