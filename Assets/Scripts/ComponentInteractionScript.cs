@@ -4,17 +4,27 @@ using UnityEngine;
 
 public class ComponentInteractionScript : MonoBehaviour
 {
+    private const float LONG_CLICK_TIME = 0.1f;
+
     private float m_clickStartPosX;
     private float m_clickStartPosY;
     private Rigidbody2D m_rb2;
     private bool m_click;
     private bool m_dragged;
     private float m_mouseDownTime;
-    private const float LONG_CLICK_TIME = 0.1f;
+    GameObject m_selectionIndicator;
+
+    private bool m_selected;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_selectionIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        m_selectionIndicator.name = "selection_indicator";
+        m_selectionIndicator.SetActive(false);
+
+
+        m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
         m_dragged = false;
@@ -70,9 +80,25 @@ public class ComponentInteractionScript : MonoBehaviour
         if ((Time.time - m_mouseDownTime) < LONG_CLICK_TIME)
         {
             // short click effect here
+            if (m_selected)
+            {
+                //DeselectComponent();
+            }
+            else
+            {
+                SelectComponent();
+            }
             Debug.Log("Object clicked: " + gameObject.name);
 
         }
+    }
+
+    private void SelectComponent()
+    {
+        //m_selected = true;
+
+        m_selectionIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        m_selectionIndicator.transform.position = m_selectionIndicator.transform.parent.position;/*.position = new Vector3(0, 0.5f, 0);*/
     }
 
     private void OnMouseDown()
