@@ -311,7 +311,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 76435673}
-        m_MethodName: optionPressed
+        m_MethodName: OptionPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -448,7 +448,18 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &204801415
 GameObject:
@@ -1814,6 +1825,7 @@ GameObject:
   - component: {fileID: 1262422563}
   - component: {fileID: 1262422562}
   - component: {fileID: 1262422565}
+  - component: {fileID: 1262422566}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1895,6 +1907,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d22b293d7f739854c993c6f87c6163ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1262422566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262422561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d706c551421b1438a8629d5363c21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1284374872
@@ -2653,7 +2677,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2040029689}
-        m_MethodName: exitGame
+        m_MethodName: ExitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2877,7 +2901,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2146322209}
-        m_MethodName: optionPressed
+        m_MethodName: OptionPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

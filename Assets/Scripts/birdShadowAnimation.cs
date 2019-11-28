@@ -23,7 +23,7 @@ public class birdShadowAnimation : MonoBehaviour
         if (m_count >= m_offsetTime )
         {
             m_count = 0;
-            transform.position = m_startPos;
+            transform.position = new Vector3(m_startPos.x + Random.Range(-100.0f, 1000.0f), m_startPos.y, m_startPos.z) ;
         }
     }
 }
