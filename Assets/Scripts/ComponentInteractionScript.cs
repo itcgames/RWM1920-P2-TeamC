@@ -12,17 +12,14 @@ public class ComponentInteractionScript : MonoBehaviour
     private bool m_click;
     private bool m_dragged;
     private float m_mouseDownTime;
-    GameObject m_selectionIndicator;
+    cakeslice.Outline outlineController;
 
     private bool m_selected;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_selectionIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        m_selectionIndicator.name = "selection_indicator";
-        m_selectionIndicator.SetActive(false);
-
+        outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
 
         m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
@@ -33,10 +30,17 @@ public class ComponentInteractionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // long click effect
-        if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
+        if (m_selected)
         {
-            MoveComponent();
+            // long click effect
+            if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
+            {
+                MoveComponent();
+            }
+        }
+        if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
+        {
+            DeselectComponent();
         }
     }
 
@@ -61,13 +65,20 @@ public class ComponentInteractionScript : MonoBehaviour
     {
         //when mouse is being dragged, immiadiately consider it as a long click
         m_dragged = true;
+        if (!m_selected)
+        {
+            SelectComponent();
+        }
+    }
+    private void OnMouseDown()
+    {
+        m_mouseDownTime = Time.time;
+        SetClickStartPosOnObject();
+        m_click = true;
     }
 
     private void OnMouseUp()
     {
-        m_click = false;
-        m_dragged = false;
-
         if (m_rb2 != null)
         {
             m_rb2.freezeRotation = false;
@@ -80,32 +91,33 @@ public class ComponentInteractionScript : MonoBehaviour
         if ((Time.time - m_mouseDownTime) < LONG_CLICK_TIME)
         {
             // short click effect here
-            if (m_selected)
-            {
-                //DeselectComponent();
-            }
-            else
+            if (!m_selected)
             {
                 SelectComponent();
             }
-            Debug.Log("Object clicked: " + gameObject.name);
-
+            else if (!m_dragged)
+            {
+                DeselectComponent();
+            }
         }
+
+        //reset bools
+        m_click = false;
+        m_dragged = false;
     }
 
     private void SelectComponent()
     {
-        //m_selected = true;
-
-        m_selectionIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        m_selectionIndicator.transform.position = m_selectionIndicator.transform.parent.position;/*.position = new Vector3(0, 0.5f, 0);*/
+        m_selected = true;
+        outlineController.eraseRenderer = false;
+        //Debug.Log("selected");
     }
 
-    private void OnMouseDown()
+    private void DeselectComponent()
     {
-        m_mouseDownTime = Time.time;
-        SetClickStartPosOnObject();
-        m_click = true;
+        m_selected = false;
+        outlineController.eraseRenderer = true;
+        //Debug.Log("DEselected");
     }
 
     private void SetClickStartPosOnObject()
