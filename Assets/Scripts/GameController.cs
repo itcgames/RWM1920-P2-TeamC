@@ -9,26 +9,12 @@ public class GameController : MonoBehaviour
     public GameObject m_resetButton;
     public GameObject m_stopSimButton;
 
-    void Start()
-    {
-    }
-
     void Update()
     {
-        if(m_isSimRunning)
-        {
-            Physics2D.autoSimulation = true;
-            m_startSimButton.SetActive(false);
-            m_resetButton.SetActive(false);
-            m_stopSimButton.SetActive(true);
-        }
-        else
-        {
-            Physics2D.autoSimulation = false;
-            m_startSimButton.SetActive(true);
-            m_resetButton.SetActive(true);
-            m_stopSimButton.SetActive(false);
-        }
+        Physics2D.autoSimulation = m_isSimRunning;
+        m_startSimButton.SetActive(!m_isSimRunning);
+        m_resetButton.SetActive(!m_isSimRunning);
+        m_stopSimButton.SetActive(m_isSimRunning);
     }
 
     public void StartSim()
@@ -38,5 +24,9 @@ public class GameController : MonoBehaviour
     public void StopSim()
     {
         m_isSimRunning = false;
+    }
+    public bool IsSimRunning()
+    {
+        return m_isSimRunning;
     }
 }
