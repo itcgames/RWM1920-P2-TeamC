@@ -19,8 +19,7 @@ public class VolumeController : MonoBehaviour
     }
 
     void UpdateVolume()
-    {
-        Debug.Log("HERE ONCE");
+    { 
         if (OptionsData.Mute)
         {
             AudioListener.volume = 0.0f;
