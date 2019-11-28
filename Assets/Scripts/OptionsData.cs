@@ -2,29 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OptionsData : MonoBehaviour
+public class OptionsData
 {
-    private float m_volumeSetting = 1;
-    private bool m_mute = false;
+    private static float m_volume = 1;
+    private static bool m_mute = false;
+    private static bool m_volumeChanged = false;
 
-    public float GetVolume()
+
+    public static float Volume
     {
-        return m_volumeSetting;
+        get
+        {
+            return m_volume;
+        }
+        set
+        {
+            m_volume = value;
+        }
     }
 
-    public bool GetMute()
+    public static bool Mute
     {
-        return m_mute;
+        get
+        {
+            return m_mute;
+        }
+        set
+        {
+            m_mute = value;
+        }
+    }
+    public static bool VolumeChanged
+    {
+        get
+        {
+            return m_volumeChanged;
+        }
+        set
+        {
+            m_volumeChanged = value;
+        }
     }
 
-    public void SetMute(bool t_mute)
-    {
-        m_mute = t_mute;
-        Debug.Log("HERE");
-    }
 
-    public void SetVolume(float t_volume)
-    {
-        m_volumeSetting = t_volume;
-    }
+
 }
