@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class exitOptionButton : MonoBehaviour
+, IPointerEnterHandler
+, IPointerExitHandler
 {
     private UIController script;
     void Start()
@@ -14,5 +17,18 @@ public class exitOptionButton : MonoBehaviour
     public void optionPressed()
     {
         script.exitOptionButtonPressed();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {//When the Mouse is over the UI Element area
+
+        transform.localScale = new Vector2(1.2f, 1.2f);
+
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {//When the Mouse has exited the UI Element area
+
+        transform.localScale = new Vector2(1f, 1f);
     }
 }

@@ -14,7 +14,7 @@ public class menuTransitionControl : MonoBehaviour
     {
         m_inView = transform.position;
         m_outOfView = m_inView;
-        m_outOfView.x = m_outOfView.x + m_offset;
+        m_outOfView.y = m_outOfView.y - m_offset;
   
     }
 
@@ -38,17 +38,17 @@ public class menuTransitionControl : MonoBehaviour
 
     void transitionOut()
     {
-        if (transform.position.x < m_outOfView.x)
+        if (transform.position.y > m_outOfView.y)
         {
-            transform.position = transform.position + new Vector3(20, 0, 0);
+            transform.position = transform.position - new Vector3(0, 20, 0);
         }
     }
 
     void transitionIn()
     {
-        if (transform.position.x > m_inView.x)
+        if (transform.position.y < m_inView.y)
         {
-            transform.position = transform.position - new Vector3(20, 0, 0);
+            transform.position = transform.position + new Vector3(0, 20, 0);
         }
 
     }
