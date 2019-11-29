@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComponentInteractionScript : MonoBehaviour
+public class ComponentInteraction : MonoBehaviour
 {
     private const float LONG_CLICK_TIME = 0.1f;
 
@@ -12,18 +12,19 @@ public class ComponentInteractionScript : MonoBehaviour
     private bool m_click;
     private bool m_dragged;
     private float m_mouseDownTime;
-    cakeslice.Outline m_outlineController;
+    private List<cakeslice.Outline> m_outlineController;
 
     private bool m_selected;
     [System.NonSerialized]
     public bool m_rightClicked;
 
     private GameObject m_anchor;
+    private float m_originalAngle;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
+        m_outlineController = new List<cakeslice.Outline>(gameObject.GetComponentsInChildren<cakeslice.Outline>());
         m_rightClicked = false;
         m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
@@ -45,6 +46,13 @@ public class ComponentInteractionScript : MonoBehaviour
             if (Input.GetMouseButtonDown(1))
             {
                 HandleComponentAlteration();
+            }
+            if (m_rightClicked)
+            {
+                if (CompareTag("Fan") || CompareTag("Cannon"))
+                {
+                    RotateTowardsMouse();
+                }
             }
         }
 
@@ -87,6 +95,16 @@ public class ComponentInteractionScript : MonoBehaviour
             m_rightClicked = true;
         }
     }
+
+    // weird bug with fan
+    //Replication process:
+    //1. Run scene
+    //2. disable fan area script
+    //3. drag cube/sphere above particles and drop it
+    //4. select fan
+    //5. right click while fan selected
+    //6. left click on fan while selected
+    //7. Now cant select object in Fan Area?????
     private void OnMouseDown()
     {
         m_mouseDownTime = Time.time;
@@ -126,18 +144,34 @@ public class ComponentInteractionScript : MonoBehaviour
     private void SelectComponent()
     {
         m_selected = true;
-        m_outlineController.eraseRenderer = false;
+        m_rightClicked = false;
+
+        foreach (var outline in m_outlineController)
+        {
+            outline.eraseRenderer = false;
+        }
     }
 
     private void DeselectComponent()
     {
+        if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
+        {
+            //transform.rotation.SetLookRotation(new Vector3(0, 0, ));
+            transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
+        }
+
         m_selected = false;
-        m_outlineController.eraseRenderer = true;
+        m_rightClicked = false;
+
+        foreach (var outline in m_outlineController)
+        {
+            outline.eraseRenderer = true;
+        }
     }
 
     private void HandleComponentAlteration()
     {
-        string tag = "";
+        string tag;
         if (gameObject.transform.parent != null)
         {
             tag = gameObject.transform.parent.tag;
@@ -149,32 +183,56 @@ public class ComponentInteractionScript : MonoBehaviour
 
         if (tag == "Balloon")
         {
-            var interactiveComps = FindObjectsOfType<ComponentInteractionScript>();
-            bool anchorSet = false;
-            BalloonController balloon = gameObject.GetComponentInChildren<BalloonController>();
+            HandleBalloon();
+        }
+        else if (tag == "Fan" || tag == "Cannon")
+        {
+            m_rightClicked = !m_rightClicked;
 
-            foreach (var comp in interactiveComps)
+            m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
+
+            //if (tag == "Fan")
+            //{
+
+            //}
+        }
+    }
+
+    private void HandleBalloon()
+    {
+        var interactiveComps = FindObjectsOfType<ComponentInteraction>();
+        bool anchorSet = false;
+        BalloonController balloon = gameObject.GetComponentInChildren<BalloonController>();
+
+        foreach (var comp in interactiveComps)
+        {
+            if (comp.m_rightClicked)
             {
-                if (comp.m_rightClicked)
-                {
-                    balloon.SetAnchor(comp.gameObject);
-                    comp.m_rightClicked = false;
-                    anchorSet = true;
-                    break;
-                }
-            }
-            if (!anchorSet)
-            {
-                if (m_anchor != null)
-                {
-                    Destroy(m_anchor);
-                }
-                m_anchor = new GameObject("Anchor");
-                Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
-                balloon.SetAnchor(m_anchor);
+                balloon.SetAnchor(comp.gameObject);
+                comp.m_rightClicked = false;
+                anchorSet = true;
+                break;
             }
         }
+        if (!anchorSet)
+        {
+            if (m_anchor != null)
+            {
+                Destroy(m_anchor);
+            }
+            m_anchor = new GameObject("Anchor");
+            Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
+            balloon.SetAnchor(m_anchor);
+        }
+    }
+
+    private void RotateTowardsMouse()
+    {
+        Transform rotatingPart = transform.Find("Pivot");
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float angle = Mathf.Atan2(mousePos.y - rotatingPart.position.y, mousePos.x - rotatingPart.position.x) * Mathf.Rad2Deg;
+        rotatingPart.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
     }
 
     private void SetClickStartPosOnObject()
