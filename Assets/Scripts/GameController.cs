@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour
         return m_isSimRunning;
     }
 
-    public void disableObjects()
+    public void DisableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
         foreach (Rigidbody2D obj in rb)
@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void enableObjects()
+    public void EnableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
         foreach (Rigidbody2D obj in rb)
