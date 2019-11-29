@@ -12,6 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64298c1808b629642a35f754d4b3b391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1623069092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000290424086727448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
+  eraseRenderer: 1
+  originalLayer: 0
+  originalMaterials: []
 --- !u!1001 &1413356627418290244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22,12 +38,12 @@ PrefabInstance:
     - target: {fileID: 603260075263998535, guid: 7ad2996d385f1a743aac769054e9a2b2,
         type: 3}
       propertyPath: m_Name
-      value: Fan Prefab
+      value: InteractiveFan (1)
       objectReference: {fileID: 0}
     - target: {fileID: 603260075263998533, guid: 7ad2996d385f1a743aac769054e9a2b2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -8.09
       objectReference: {fileID: 0}
     - target: {fileID: 603260075263998533, guid: 7ad2996d385f1a743aac769054e9a2b2,
         type: 3}
@@ -79,17 +95,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 603260075263998532, guid: 7ad2996d385f1a743aac769054e9a2b2,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 7
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 603260075263998532, guid: 7ad2996d385f1a743aac769054e9a2b2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7ad2996d385f1a743aac769054e9a2b2, type: 3}
 --- !u!1 &2000290423754400259 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 603260075263998535, guid: 7ad2996d385f1a743aac769054e9a2b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1413356627418290244}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2000290424086727448 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 603260075468395356, guid: 7ad2996d385f1a743aac769054e9a2b2,
     type: 3}
   m_PrefabInstance: {fileID: 1413356627418290244}
   m_PrefabAsset: {fileID: 0}

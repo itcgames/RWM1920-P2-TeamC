@@ -4,6 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - FanAOE
+  - Balloon
+  - Fan
+  - WreckingBall
+  - Cannon
   - Start
   - Endpoint
   - LevelCompletePanel

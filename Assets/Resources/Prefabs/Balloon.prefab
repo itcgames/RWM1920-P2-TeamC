@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 8046066177017723469}
   m_Layer: 0
   m_Name: Balloon
-  m_TagString: Untagged
+  m_TagString: Balloon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,7 +176,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bounciness: 0.5
   float: 0
-  gasStrenght: 0
+  gasStrenght: 1
   balloonType: 0
   anchorPoint: {fileID: 0}
   leashDistance: 3
@@ -209,14 +209,14 @@ SpringJoint2D:
   m_GameObject: {fileID: 6233725274178558701}
   m_Enabled: 1
   serializedVersion: 4
-  m_EnableCollision: 0
+  m_EnableCollision: 1
   m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: 40
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
   m_Anchor: {x: -0.05, y: -0.93}
   m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 1
-  m_Distance: 2.2005682
-  m_DampingRatio: 0
+  m_AutoConfigureDistance: 0
+  m_Distance: 1
+  m_DampingRatio: 1
   m_Frequency: 1

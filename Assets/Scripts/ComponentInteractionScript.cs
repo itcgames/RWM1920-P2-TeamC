@@ -4,17 +4,28 @@ using UnityEngine;
 
 public class ComponentInteractionScript : MonoBehaviour
 {
+    private const float LONG_CLICK_TIME = 0.1f;
+
     private float m_clickStartPosX;
     private float m_clickStartPosY;
     private Rigidbody2D m_rb2;
     private bool m_click;
     private bool m_dragged;
     private float m_mouseDownTime;
-    private const float LONG_CLICK_TIME = 0.1f;
+    cakeslice.Outline m_outlineController;
+
+    private bool m_selected;
+    [System.NonSerialized]
+    public bool m_rightClicked;
+
+    private GameObject m_anchor;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
+        m_rightClicked = false;
+        m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
         m_dragged = false;
@@ -23,10 +34,23 @@ public class ComponentInteractionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // long click effect
-        if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
+        if (m_selected)
         {
-            MoveComponent();
+            // long click effect
+            if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
+            {
+                MoveComponent();
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                HandleComponentAlteration();
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
+        {
+            DeselectComponent();
         }
     }
 
@@ -43,7 +67,6 @@ public class ComponentInteractionScript : MonoBehaviour
         Vector2 mousePos;
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-
         gameObject.transform.localPosition = new Vector2(mousePos.x - m_clickStartPosX, mousePos.y - m_clickStartPosY);
     }
 
@@ -51,13 +74,28 @@ public class ComponentInteractionScript : MonoBehaviour
     {
         //when mouse is being dragged, immiadiately consider it as a long click
         m_dragged = true;
+        if (!m_selected)
+        {
+            SelectComponent();
+        }
+    }
+
+    private void OnMouseOver()
+    {
+        if (!m_selected && Input.GetMouseButtonDown(1))
+        {
+            m_rightClicked = true;
+        }
+    }
+    private void OnMouseDown()
+    {
+        m_mouseDownTime = Time.time;
+        SetClickStartPosOnObject();
+        m_click = true;
     }
 
     private void OnMouseUp()
     {
-        m_click = false;
-        m_dragged = false;
-
         if (m_rb2 != null)
         {
             m_rb2.freezeRotation = false;
@@ -70,16 +108,73 @@ public class ComponentInteractionScript : MonoBehaviour
         if ((Time.time - m_mouseDownTime) < LONG_CLICK_TIME)
         {
             // short click effect here
-            Debug.Log("Object clicked: " + gameObject.name);
-
+            if (!m_selected)
+            {
+                SelectComponent();
+            }
+            else if (!m_dragged)
+            {
+                DeselectComponent();
+            }
         }
+
+        //reset bools
+        m_click = false;
+        m_dragged = false;
     }
 
-    private void OnMouseDown()
+    private void SelectComponent()
     {
-        m_mouseDownTime = Time.time;
-        SetClickStartPosOnObject();
-        m_click = true;
+        m_selected = true;
+        m_outlineController.eraseRenderer = false;
+    }
+
+    private void DeselectComponent()
+    {
+        m_selected = false;
+        m_outlineController.eraseRenderer = true;
+    }
+
+    private void HandleComponentAlteration()
+    {
+        string tag = "";
+        if (gameObject.transform.parent != null)
+        {
+            tag = gameObject.transform.parent.tag;
+        }
+        else
+        {
+            tag = gameObject.tag;
+        }
+
+        if (tag == "Balloon")
+        {
+            var interactiveComps = FindObjectsOfType<ComponentInteractionScript>();
+            bool anchorSet = false;
+            BalloonController balloon = gameObject.GetComponentInChildren<BalloonController>();
+
+            foreach (var comp in interactiveComps)
+            {
+                if (comp.m_rightClicked)
+                {
+                    balloon.SetAnchor(comp.gameObject);
+                    comp.m_rightClicked = false;
+                    anchorSet = true;
+                    break;
+                }
+            }
+            if (!anchorSet)
+            {
+                if (m_anchor != null)
+                {
+                    Destroy(m_anchor);
+                }
+                m_anchor = new GameObject("Anchor");
+                Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
+                balloon.SetAnchor(m_anchor);
+            }
+        }
     }
 
     private void SetClickStartPosOnObject()
