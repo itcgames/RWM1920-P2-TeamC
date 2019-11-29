@@ -10,18 +10,22 @@ public class WreckingBallFreezeBehaviour : MonoBehaviour
 
     private bool m_hasBeenFrozen;
     private List<Rigidbody2D> m_childrenRigidbodies;
-
+   // private Collider2D m_collider;
 
     void Start()
     {
+       // m_collider = GetComponent<Collider2D>();
         m_hasBeenFrozen = false;
         Debug.Log(transform.childCount);
         m_childrenRigidbodies = new List<Rigidbody2D>();
-        for(int index = 0;index < transform.childCount; index++)
+        for (int index = 0; index < transform.childCount; index++)
         {
             m_childrenRigidbodies.Add(transform.GetChild(index).gameObject.GetComponent<Rigidbody2D>());
         }
+
         if (m_freeze) FreezeChildren();
+       // else UnFreezeChildren();
+
     }
 
     // Update is called once per frame
@@ -31,10 +35,11 @@ public class WreckingBallFreezeBehaviour : MonoBehaviour
         {
             FreezeChildren();
         }
-        else if(!m_freeze && m_hasBeenFrozen)
+        else if (!m_freeze && m_hasBeenFrozen)
         {
-            UnFreezeChildren();
+                UnFreezeChildren();
         }
+       // m_collider.enabled = m_hasBeenFrozen;
     }
 
     private void FreezeChildren()
