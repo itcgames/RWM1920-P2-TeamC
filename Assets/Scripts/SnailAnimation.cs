@@ -25,14 +25,12 @@ public class SnailAnimation : MonoBehaviour
         m_startPos = transform.position;
         m_speed = new Vector3(2, 0, 0);
         m_source = transform.parent.GetComponent<AudioSource>();
-        m_source.volume = 0.1f; 
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        handlePanic();
+        HandlePanic();
         transform.position = transform.position + (m_speed + m_speedUp);
         if (Math.Abs(m_startPos.x - transform.position.x) > m_offset)
         {
@@ -45,7 +43,6 @@ public class SnailAnimation : MonoBehaviour
             transform.localScale = tempScale;
             m_startPos.x = transform.position.x;
             transform.position = new Vector3(m_startPos.x, m_startPos.y + UnityEngine.Random.Range(-500.0f, 500.0f), m_startPos.z);
-
         }
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -60,13 +57,11 @@ public class SnailAnimation : MonoBehaviour
             m_speedUp.x = m_speedCap;
         }
         m_panicCount = m_panicCap;
-
     }
 
 
-    void handlePanic()
+    void HandlePanic()
     {
-        
         if (m_panicCount == 0)
         {
 
