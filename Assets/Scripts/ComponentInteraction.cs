@@ -396,11 +396,12 @@ public class ComponentInteraction : MonoBehaviour
         {
             hinges[index].rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle));
             hinges[index].position = new Vector2(dist*(Mathf.Cos(angle * Mathf.Deg2Rad)), dist*(Mathf.Sin(angle * Mathf.Deg2Rad)));
+            hinges[index].position += anchor.position;
             dist += 0.5f;
         }
         dist += 0.3f;
         ball.position = new Vector2(dist * (Mathf.Cos(angle * Mathf.Deg2Rad)), dist * (Mathf.Sin(angle * Mathf.Deg2Rad)));
-
+        ball.position += anchor.position;
         List<Transform> children = new List<Transform>();
         for(int index = 0; index < transform.childCount; index++)
         {

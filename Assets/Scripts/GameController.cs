@@ -46,9 +46,14 @@ public class GameController : MonoBehaviour
     public void DisableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        var wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        foreach  (var ball in wreckingBalls)
+        {
+            ball.GetComponent<WreckingBallFreezeBehaviour>().m_freeze = true;
         }
     }
 
@@ -58,6 +63,12 @@ public class GameController : MonoBehaviour
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.None;
+        }
+        var wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
+
+        foreach (var ball in wreckingBalls)
+        {
+            ball.GetComponent<WreckingBallFreezeBehaviour>().m_freeze = false;
         }
     }
 }

@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 2573681310403504907, guid: dc9bac01ff760be458b20cc1f6f24536,
         type: 3}
       propertyPath: m_Name
-      value: WreckingBall
+      value: New Interactive Ball
       objectReference: {fileID: 0}
     - target: {fileID: 2573681310403504948, guid: dc9bac01ff760be458b20cc1f6f24536,
         type: 3}

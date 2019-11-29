@@ -93,7 +93,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3076425122303229762}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 6200000, guid: e1a1482f3518e784285b41d7bf396f5c, type: 2}
   m_IsTrigger: 0
@@ -198,6 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1412532471179517922}
+  - component: {fileID: 3556741197399734894}
   m_Layer: 0
   m_Name: Interactive Balloon
   m_TagString: Balloon
@@ -220,6 +221,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &3556741197399734894
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4625855708632778434}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: e1a1482f3518e784285b41d7bf396f5c, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0010953546, y: 0.04}
+  m_Size: {x: 0.62, y: 0.79}
+  m_Direction: 0
 --- !u!1 &8949510366027420910
 GameObject:
   m_ObjectHideFlags: 0

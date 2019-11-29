@@ -38,7 +38,7 @@ public class WreckingBallFreezeBehaviour : MonoBehaviour
         {
             FreezeChildren();
         }
-        else if (!m_freeze && m_hasBeenFrozen)
+        else if (!m_freeze)
         {
              UnFreezeChildren();
         }
