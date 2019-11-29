@@ -12,6 +12,12 @@ TagManager:
   - Start
   - Endpoint
   - LevelCompletePanel
+  - Ball
+  - AnchorPoint
+  - HingeOne
+  - HingeTwo
+  - HingeThree
+  - HingeFour
   layers:
   - Default
   - TransparentFX
