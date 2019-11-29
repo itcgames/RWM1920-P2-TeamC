@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class loadScene : MonoBehaviour
 {
-    private int totalLevels = 2;
+    private int m_totalLevels = 2;
 
     public void LoadAScene(string t_scene)
     {
@@ -17,7 +17,7 @@ public class loadScene : MonoBehaviour
         string name = SceneManager.GetActiveScene().name;
         int last = (int)char.GetNumericValue(name[name.Length - 1]);
 
-        if (last == totalLevels)
+        if (last == m_totalLevels)
         {
             LoadAScene("mainMenu");
         }
