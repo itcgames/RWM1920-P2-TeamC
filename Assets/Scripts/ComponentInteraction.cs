@@ -71,9 +71,12 @@ public class ComponentInteraction : MonoBehaviour
         if (m_rb2 != null)
         {
             m_rb2.Sleep();
-            m_rb2.velocity = Vector2.zero;
-            m_rb2.freezeRotation = true;
-            m_rb2.angularVelocity = 0.0f;
+            if (m_rb2.bodyType != RigidbodyType2D.Static)
+            {
+                m_rb2.velocity = Vector2.zero;
+                m_rb2.freezeRotation = true;
+                m_rb2.angularVelocity = 0.0f;
+            }
         }
 
         Vector2 mousePos;
@@ -99,7 +102,7 @@ public class ComponentInteraction : MonoBehaviour
                 {
                     SelectComponent();
                 }
-            } 
+            }
         }
         else if (!m_selected)
         {
@@ -118,18 +121,9 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
-    // weird bug with fan
-    //Replication process:
-    //1. Run scene
-    //2. disable fan area script
-    //3. drag cube/sphere above particles and drop it
-    //4. select fan
-    //5. right click while fan selected
-    //6. left click on fan while selected
-    //7. Now cant select object in Fan Area?????
     private void OnMouseDown()
     {
-        Debug.Log("mouse down");
+        //Debug.Log("mouse down");
         //set time when we clicked to differiciate between short click and long click
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
@@ -208,7 +202,7 @@ public class ComponentInteraction : MonoBehaviour
             }
             outline.color = 0;
         }
-        
+
         //if we deselected while changing angle...
         if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
         {
@@ -309,7 +303,7 @@ public class ComponentInteraction : MonoBehaviour
                         transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
                         outline.color = 0;
                     }
-                }                
+                }
             }
 
         }
