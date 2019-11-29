@@ -22,24 +22,33 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
 
-
-
+    private Vector3 m_startPosition;
+	private GameController m_controller;
     // Start is called before the first frame update
     void Start()
     {
         m_mouseDragStart = new Vector3(9999, 9999);
+        if (GameObject.FindGameObjectWithTag("GameController") != null)
+        {
+            m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>(); 
+        }
         m_outlineController = new List<cakeslice.Outline>(gameObject.GetComponentsInChildren<cakeslice.Outline>());
         m_rightClicked = false;
         m_selected = false;
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
         m_dragged = false;
+        m_startPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_selected)
+		if(m_selected && m_controller != null)
+        {
+            m_selected = !m_controller.IsSimRunning();
+        }
+		if (m_selected)
         {
             // long click effect (consider 
             if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
@@ -75,9 +84,12 @@ public class ComponentInteraction : MonoBehaviour
         if (m_rb2 != null)
         {
             m_rb2.Sleep();
-            m_rb2.velocity = Vector2.zero;
-            m_rb2.freezeRotation = true;
-            m_rb2.angularVelocity = 0.0f;
+            if (m_rb2.bodyType != RigidbodyType2D.Static)
+            {
+                m_rb2.velocity = Vector2.zero;
+                m_rb2.freezeRotation = true;
+                m_rb2.angularVelocity = 0.0f;
+            }
         }
 
         Vector2 mousePos;
@@ -96,18 +108,18 @@ public class ComponentInteraction : MonoBehaviour
             }
             if ((m_mouseDragStart - (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition)).magnitude > 0f)
             {
-                Debug.Log("mouse dragged");
+                //Debug.Log("mouse dragged");
                 //when object is being dragged by mouse, immiadiately consider it as a long click
                 m_dragged = true;
                 if (!m_selected)
                 {
                     SelectComponent();
                 }
-            } 
+            }
         }
         else if (!m_selected)
         {
-            Debug.Log("mouse long click");
+            //Debug.Log("mouse long click");
             SelectComponent();
         }
     }
@@ -122,18 +134,9 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
-    // weird bug with fan
-    //Replication process:
-    //1. Run scene
-    //2. disable fan area script
-    //3. drag cube/sphere above particles and drop it
-    //4. select fan
-    //5. right click while fan selected
-    //6. left click on fan while selected
-    //7. Now cant select object in Fan Area?????
     private void OnMouseDown()
     {
-        Debug.Log("mouse down");
+        //Debug.Log("mouse down");
         //set time when we clicked to differiciate between short click and long click
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
@@ -172,6 +175,19 @@ public class ComponentInteraction : MonoBehaviour
         m_click = false;
         m_dragged = false;
         m_mouseDragStart = new Vector2(9999, 9999);
+
+        bool updateStartingPos = true;
+        for (int i = 0; i < m_outlineController.Count; i++)
+        {
+            if (m_outlineController[i].color == 1)
+            {
+                updateStartingPos = false;
+            }
+        }
+        if (updateStartingPos)
+        {
+            m_startPosition = gameObject.transform.position;
+        }
     }
 
     private void SelectComponent()
@@ -191,6 +207,15 @@ public class ComponentInteraction : MonoBehaviour
 
     private void UnselectComponent()
     {
+        foreach (var outline in m_outlineController)
+        {
+            if (outline.color == 1)
+            {
+                transform.position = m_startPosition;
+            }
+            outline.color = 0;
+        }
+
         //if we deselected while changing angle...
         if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
         {
@@ -207,6 +232,28 @@ public class ComponentInteraction : MonoBehaviour
         {
             //disable outline drawing
             outline.eraseRenderer = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (m_selected)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.color = 0;
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (m_selected)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.color = 1;
+            }
         }
     }
 
@@ -233,8 +280,23 @@ public class ComponentInteraction : MonoBehaviour
         {
             //reuse this bool for rotating fan and cannon
             m_rightClicked = !m_rightClicked;
-            //save the angle before we start following mouse
-            m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
+            if (m_rightClicked)
+            {
+                //save the angle before we start following mouse
+                m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
+            }
+            else
+            {
+                foreach (var outline in m_outlineController)
+                {
+                    if (outline.color == 1)
+                    {
+                        transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
+                        outline.color = 0;
+                    }
+                }
+            }
+
         }
         else if (tag == "WreckingBall")
         {
@@ -297,6 +359,20 @@ public class ComponentInteraction : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         float angle = Mathf.Atan2(mousePos.y - rotatingPart.position.y, mousePos.x - rotatingPart.position.x) * Mathf.Rad2Deg;
         rotatingPart.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+
+        if (CompareTag("Fan"))
+        {
+            if (gameObject.transform.Find("Pivot").GetComponent<CapsuleCollider2D>().IsTouchingLayers())
+            {
+                GameObject fanHead = transform.Find("Pivot").transform.Find("fanHead").gameObject;
+                fanHead.GetComponent<cakeslice.Outline>().color = 1;
+            }
+            else if (gameObject.transform.Find("fanBase").GetComponent<cakeslice.Outline>().color != 1)
+            {
+                GameObject fanHead = transform.Find("Pivot").transform.Find("fanHead").gameObject;
+                fanHead.GetComponent<cakeslice.Outline>().color = 0;
+            }
+        }
     }
 
     private void RotateAllTowardsMouse()

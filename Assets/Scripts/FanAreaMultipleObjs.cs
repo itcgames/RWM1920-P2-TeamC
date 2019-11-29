@@ -8,7 +8,6 @@ public class FanAreaMultipleObjs : MonoBehaviour
     public Vector3 direction;
     public Vector3 size;
 
-    private bool inFanArea = false;
     protected Rigidbody2D rb;
 
     private List<Rigidbody2D> m_affectedObjects;
@@ -16,11 +15,16 @@ public class FanAreaMultipleObjs : MonoBehaviour
     private void Start()
     {
         m_affectedObjects = new List<Rigidbody2D>();
+        ParticleSystem.MainModule ps = gameObject.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+        ps.startSpeed = strength * size.x;
     }
 
     // Update is called once per frame
-    private void FixedUpdate()
+    private void Update()
     {
+        ParticleSystem.MainModule ps = gameObject.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+        ps.startSpeed = strength * size.x;
+
         transform.localScale = new Vector3(size.x * strength, size.y, size.z);
         float newX = strength * Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.z);
         float newY = strength * Mathf.Sin(Mathf.Deg2Rad * transform.eulerAngles.z);
