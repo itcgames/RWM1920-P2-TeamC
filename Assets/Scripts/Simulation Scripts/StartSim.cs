@@ -5,12 +5,16 @@ using UnityEngine.EventSystems;
 
 public class StartSim : MonoBehaviour, IPointerClickHandler
 {
-    public GameObject m_controller;
+    private GameController m_controller;
+
+    void Start()
+    {
+        m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+    }
 
     //Detect if a click occurs
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        GameController script = m_controller.GetComponent<GameController>();
-        script.StartSim();
+        m_controller.StartSim();
     }
 }

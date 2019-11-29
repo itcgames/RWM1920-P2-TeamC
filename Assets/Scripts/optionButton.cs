@@ -8,6 +8,7 @@ public class optionButton : MonoBehaviour
     void Start()
     {
         m_script = transform.parent.parent.parent.gameObject.GetComponent<UIController>();
+        
     }
     public void OptionPressed()
     {

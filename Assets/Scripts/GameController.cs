@@ -9,9 +9,22 @@ public class GameController : MonoBehaviour
     public GameObject m_resetButton;
     public GameObject m_stopSimButton;
 
+    void Start()
+    {
+        DisableObjects();
+    }
+
     void Update()
     {
-        Physics2D.autoSimulation = m_isSimRunning;
+        if(!m_isSimRunning)
+        {
+            DisableObjects();
+        }
+        else
+        {
+            EnableObjects();
+        }
+        //Physics2D.autoSimulation = m_isSimRunning;
         m_startSimButton.SetActive(!m_isSimRunning);
         m_resetButton.SetActive(!m_isSimRunning);
         m_stopSimButton.SetActive(m_isSimRunning);
@@ -28,5 +41,23 @@ public class GameController : MonoBehaviour
     public bool IsSimRunning()
     {
         return m_isSimRunning;
+    }
+
+    public void DisableObjects()
+    {
+        Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        foreach (Rigidbody2D obj in rb)
+        {
+            obj.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
+
+    public void EnableObjects()
+    {
+        Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        foreach (Rigidbody2D obj in rb)
+        {
+            obj.constraints = RigidbodyConstraints2D.None;
+        }
     }
 }

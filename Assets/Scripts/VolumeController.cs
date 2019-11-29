@@ -11,11 +11,7 @@ public class VolumeController : MonoBehaviour
 
     void Update()
     {
-       if(OptionsData.VolumeChanged)
-        {
-            OptionsData.VolumeChanged = false;
-            UpdateVolume();
-        }
+       UpdateVolume(); 
     }
 
     void UpdateVolume()

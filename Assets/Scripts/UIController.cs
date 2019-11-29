@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
     private bool m_optionsInView = false;
     public void OptionButtonPressed()
     {
+        
         m_menuInView = false;
         m_optionsInView = true;
         SetTransitions();
@@ -22,11 +23,11 @@ public class UIController : MonoBehaviour
     }
 
     void SetTransitions()
-    { 
-        menuTransitionControl menuControl = transform.GetChild(1).GetComponent<menuTransitionControl>();
+    {
+        menuTransitionControl menuControl = transform.GetChild(0).GetComponent<menuTransitionControl>();
         menuControl.SetTransition(m_menuInView);
 
-        optionTransitionControl optionControl = transform.GetChild(2).GetComponent<optionTransitionControl>();
+        optionTransitionControl optionControl = transform.GetChild(1).GetComponent<optionTransitionControl>();
         optionControl.SetTransition(m_optionsInView);
     }
 }
