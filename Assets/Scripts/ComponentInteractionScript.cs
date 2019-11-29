@@ -19,10 +19,13 @@ public class ComponentInteractionScript : MonoBehaviour
     public bool m_rightClicked;
 
     private GameObject m_anchor;
+    private GameController m_controller;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+
         m_outlineController = gameObject.GetComponentInChildren<cakeslice.Outline>();
         m_rightClicked = false;
         m_selected = false;
@@ -34,6 +37,11 @@ public class ComponentInteractionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(m_selected)
+        {
+            m_selected = !m_controller.IsSimRunning();
+        }
+
         if (m_selected)
         {
             // long click effect
