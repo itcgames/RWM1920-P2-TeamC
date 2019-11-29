@@ -22,11 +22,15 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
     private Vector3 m_startPosition;
-
+	private GameController m_controller;
     // Start is called before the first frame update
     void Start()
     {
         m_mouseDragStart = new Vector3(9999, 9999);
+        if (GameObject.FindGameObjectWithTag("GameController") != null)
+        {
+            m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>(); 
+        }
         m_outlineController = new List<cakeslice.Outline>(gameObject.GetComponentsInChildren<cakeslice.Outline>());
         m_rightClicked = false;
         m_selected = false;
@@ -39,7 +43,11 @@ public class ComponentInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_selected)
+		if(m_selected && m_controller != null)
+        {
+            m_selected = !m_controller.IsSimRunning();
+        }
+		if (m_selected)
         {
             // long click effect (consider 
             if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
@@ -243,28 +251,6 @@ public class ComponentInteraction : MonoBehaviour
             }
         }
     }
-
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (m_selected)
-    //    {
-    //        foreach (var outline in m_outlineController)
-    //        {
-    //            outline.color = 0;
-    //        }
-    //    }
-    //}
-
-    //private void OnTriggerStay2D(Collider2D collision)
-    //{
-    //    if (m_selected && collision.tag != "FanAOE")
-    //    {
-    //        foreach (var outline in m_outlineController)
-    //        {
-    //            outline.color = 1;
-    //        }
-    //    }
-    //}
 
     private void HandleComponentAlteration()
     {
