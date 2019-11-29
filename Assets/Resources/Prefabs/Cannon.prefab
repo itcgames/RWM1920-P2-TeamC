@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3864315917389592561}
   m_Layer: 0
-  m_Name: BarrelPivot
+  m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -181,6 +181,9 @@ GameObject:
   - component: {fileID: 4888455108209591401}
   - component: {fileID: 1998847898285694744}
   - component: {fileID: 824703646204911561}
+  - component: {fileID: 3393234965847665696}
+  - component: {fileID: 5000745372807329408}
+  - component: {fileID: 124067869298026460}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Cannon
@@ -246,6 +249,8 @@ MonoBehaviour:
   firePoint: {fileID: 4888455108161603615}
   FireStrength: 500
   fireDelay: 1
+  autoFire: 1
+  fireOnce: 1
 --- !u!114 &1998847898285694744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +258,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4888455108209591396}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1671c54755865e94da0db0af0e039209, type: 3}
   m_Name: 
@@ -313,3 +318,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3393234965847665696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888455108209591396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
+  eraseRenderer: 1
+  originalLayer: 0
+  originalMaterials: []
+--- !u!114 &5000745372807329408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888455108209591396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64298c1808b629642a35f754d4b3b391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!50 &124067869298026460
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888455108209591396}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

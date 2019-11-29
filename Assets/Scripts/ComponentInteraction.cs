@@ -46,6 +46,10 @@ public class ComponentInteraction : MonoBehaviour
 		if(m_selected && m_controller != null)
         {
             m_selected = !m_controller.IsSimRunning();
+            if (!m_selected)
+            {
+                UnselectComponent();
+            }
         }
 		if (m_selected)
         {
@@ -301,7 +305,7 @@ public class ComponentInteraction : MonoBehaviour
         var interactiveComps = FindObjectsOfType<ComponentInteraction>();
         bool anchorSet = false;
         //get balloon's controller
-        BalloonController balloon = gameObject.GetComponentInChildren<BalloonController>();
+        InteractiveBalloonController balloon = gameObject.GetComponentInChildren<InteractiveBalloonController>();
 
         //find if any object with interactive script was clicked
         foreach (var comp in interactiveComps)
