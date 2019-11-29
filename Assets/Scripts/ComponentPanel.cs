@@ -6,14 +6,19 @@ using UnityEngine.EventSystems;
 public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public GameObject m_obj;
-    public GameObject m_controller;
+    private GameController m_controller;
     private bool m_followPointer;
     private GameObject m_placeObject = null;
+
+    void Start()
+    {
+        m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+    }
 
     //Detect current clicks on the GameObject (the one with the script attached)
     public void OnPointerDown(PointerEventData pointerEventData)
     {
-        if (!m_controller.GetComponent<GameController>().IsSimRunning())
+        if (!m_controller.IsSimRunning())
         {
             m_placeObject = Instantiate(m_obj, this.transform.position, Quaternion.identity);
             m_followPointer = true;

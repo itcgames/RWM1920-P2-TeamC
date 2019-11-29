@@ -11,18 +11,18 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        disableObjects();
+        DisableObjects();
     }
 
     void Update()
     {
         if(!m_isSimRunning)
         {
-            disableObjects();
+            DisableObjects();
         }
         else
         {
-            enableObjects();
+            EnableObjects();
         }
         //Physics2D.autoSimulation = m_isSimRunning;
         m_startSimButton.SetActive(!m_isSimRunning);
