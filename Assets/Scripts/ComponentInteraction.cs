@@ -21,6 +21,7 @@ public class ComponentInteraction : MonoBehaviour
     private GameObject m_anchor;
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
+    private Vector3 m_startPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,7 @@ public class ComponentInteraction : MonoBehaviour
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
         m_dragged = false;
+        m_startPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -90,7 +92,7 @@ public class ComponentInteraction : MonoBehaviour
             }
             if ((m_mouseDragStart - (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition)).magnitude > 0f)
             {
-                Debug.Log("mouse dragged");
+                //Debug.Log("mouse dragged");
                 //when object is being dragged by mouse, immiadiately consider it as a long click
                 m_dragged = true;
                 if (!m_selected)
@@ -101,7 +103,7 @@ public class ComponentInteraction : MonoBehaviour
         }
         else if (!m_selected)
         {
-            Debug.Log("mouse long click");
+            //Debug.Log("mouse long click");
             SelectComponent();
         }
     }
@@ -166,6 +168,19 @@ public class ComponentInteraction : MonoBehaviour
         m_click = false;
         m_dragged = false;
         m_mouseDragStart = new Vector2(9999, 9999);
+
+        bool updateStartingPos = true;
+        for (int i = 0; i < m_outlineController.Count; i++)
+        {
+            if (m_outlineController[i].color == 1)
+            {
+                updateStartingPos = false;
+            }
+        }
+        if (updateStartingPos)
+        {
+            m_startPosition = gameObject.transform.position;
+        }
     }
 
     private void SelectComponent()
@@ -185,6 +200,15 @@ public class ComponentInteraction : MonoBehaviour
 
     private void UnselectComponent()
     {
+        foreach (var outline in m_outlineController)
+        {
+            if (outline.color == 1)
+            {
+                transform.position = m_startPosition;
+            }
+            outline.color = 0;
+        }
+        
         //if we deselected while changing angle...
         if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
         {
@@ -203,6 +227,50 @@ public class ComponentInteraction : MonoBehaviour
             outline.eraseRenderer = true;
         }
     }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (m_selected)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.color = 0;
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (m_selected)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.color = 1;
+            }
+        }
+    }
+
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (m_selected)
+    //    {
+    //        foreach (var outline in m_outlineController)
+    //        {
+    //            outline.color = 0;
+    //        }
+    //    }
+    //}
+
+    //private void OnTriggerStay2D(Collider2D collision)
+    //{
+    //    if (m_selected && collision.tag != "FanAOE")
+    //    {
+    //        foreach (var outline in m_outlineController)
+    //        {
+    //            outline.color = 1;
+    //        }
+    //    }
+    //}
 
     private void HandleComponentAlteration()
     {
@@ -227,8 +295,23 @@ public class ComponentInteraction : MonoBehaviour
         {
             //reuse this bool for rotating fan and cannon
             m_rightClicked = !m_rightClicked;
-            //save the angle before we start following mouse
-            m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
+            if (m_rightClicked)
+            {
+                //save the angle before we start following mouse
+                m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
+            }
+            else
+            {
+                foreach (var outline in m_outlineController)
+                {
+                    if (outline.color == 1)
+                    {
+                        transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
+                        outline.color = 0;
+                    }
+                }                
+            }
+
         }
     }
 
@@ -285,6 +368,20 @@ public class ComponentInteraction : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         float angle = Mathf.Atan2(mousePos.y - rotatingPart.position.y, mousePos.x - rotatingPart.position.x) * Mathf.Rad2Deg;
         rotatingPart.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+
+        if (CompareTag("Fan"))
+        {
+            if (gameObject.transform.Find("Pivot").GetComponent<CapsuleCollider2D>().IsTouchingLayers())
+            {
+                GameObject fanHead = transform.Find("Pivot").transform.Find("fanHead").gameObject;
+                fanHead.GetComponent<cakeslice.Outline>().color = 1;
+            }
+            else if (gameObject.transform.Find("fanBase").GetComponent<cakeslice.Outline>().color != 1)
+            {
+                GameObject fanHead = transform.Find("Pivot").transform.Find("fanHead").gameObject;
+                fanHead.GetComponent<cakeslice.Outline>().color = 0;
+            }
+        }
     }
 
     /// <summary>
