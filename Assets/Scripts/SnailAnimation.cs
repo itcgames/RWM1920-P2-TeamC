@@ -25,7 +25,7 @@ public class SnailAnimation : MonoBehaviour
         m_startPos = transform.position;
         m_speed = new Vector3(2, 0, 0);
         m_source = transform.parent.GetComponent<AudioSource>();
-        m_source.volume = 0.1f; 
+        //m_source.volume = 0.1f; 
 
     }
 
