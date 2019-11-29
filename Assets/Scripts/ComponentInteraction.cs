@@ -22,6 +22,8 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -54,6 +56,10 @@ public class ComponentInteraction : MonoBehaviour
                 if (CompareTag("Fan") || CompareTag("Cannon"))
                 {
                     RotateTowardsMouse();
+                }
+                else if(CompareTag("WreckingBall"))
+                {
+                    RotateAllTowardsMouse();
                 }
             }
         }
@@ -230,6 +236,12 @@ public class ComponentInteraction : MonoBehaviour
             //save the angle before we start following mouse
             m_originalAngle = gameObject.transform.Find("Pivot").transform.eulerAngles.z;
         }
+        else if (tag == "WreckingBall")
+        {
+            m_rightClicked = !m_rightClicked;
+            m_originalAngle = gameObject.transform.Find("Ball").transform.eulerAngles.z;
+
+        }
     }
 
     private void HandleBalloon()
@@ -285,6 +297,42 @@ public class ComponentInteraction : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         float angle = Mathf.Atan2(mousePos.y - rotatingPart.position.y, mousePos.x - rotatingPart.position.x) * Mathf.Rad2Deg;
         rotatingPart.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+    }
+
+    private void RotateAllTowardsMouse()
+    {
+        Transform anchor = transform.Find("AnchorPoint");
+        Transform ball = transform.Find("Ball");
+        List<Transform> hinges = new List<Transform>();
+        for(int index = 0; index < 4; index++)
+        {
+            hinges.Add(transform.Find("Hinge" + (index + 1).ToString()));
+        }
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float angle = Mathf.Atan2(mousePos.y - anchor.position.y, mousePos.x - anchor.position.x) * Mathf.Rad2Deg;
+        anchor.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle));
+        float dist = 0.3f;
+        for (int index = 0; index < 4; index++)
+        {
+            hinges[index].rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle));
+            hinges[index].position = new Vector2(dist*(Mathf.Cos(angle * Mathf.Deg2Rad)), dist*(Mathf.Sin(angle * Mathf.Deg2Rad)));
+            dist += 0.5f;
+        }
+        dist += 0.3f;
+        ball.position = new Vector2(dist * (Mathf.Cos(angle * Mathf.Deg2Rad)), dist * (Mathf.Sin(angle * Mathf.Deg2Rad)));
+
+        List<Transform> children = new List<Transform>();
+        for(int index = 0; index < transform.childCount; index++)
+        {
+            children.Add(transform.GetChild(index));
+        }
+
+        transform.DetachChildren();
+        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle + 180.0f));
+        foreach  (Transform child in children)
+        {
+            child.parent = transform;
+        }
     }
 
     /// <summary>

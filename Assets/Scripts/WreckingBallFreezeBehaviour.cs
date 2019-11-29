@@ -10,22 +10,25 @@ public class WreckingBallFreezeBehaviour : MonoBehaviour
 
     private bool m_hasBeenFrozen;
     private List<Rigidbody2D> m_childrenRigidbodies;
-   // private Collider2D m_collider;
+    private List<Vector3> m_startPositions;
+    private List<Vector3> m_startRotations;
 
     void Start()
     {
-       // m_collider = GetComponent<Collider2D>();
         m_hasBeenFrozen = false;
         Debug.Log(transform.childCount);
         m_childrenRigidbodies = new List<Rigidbody2D>();
+        m_startRotations = new List<Vector3>();
+        m_startPositions = new List<Vector3>();
         for (int index = 0; index < transform.childCount; index++)
         {
             m_childrenRigidbodies.Add(transform.GetChild(index).gameObject.GetComponent<Rigidbody2D>());
+
+            m_startPositions.Add(transform.GetChild(index).position);
+            m_startRotations.Add(transform.GetChild(index).rotation.eulerAngles);
         }
 
         if (m_freeze) FreezeChildren();
-       // else UnFreezeChildren();
-
     }
 
     // Update is called once per frame
@@ -37,18 +40,40 @@ public class WreckingBallFreezeBehaviour : MonoBehaviour
         }
         else if (!m_freeze && m_hasBeenFrozen)
         {
-                UnFreezeChildren();
+             UnFreezeChildren();
         }
-       // m_collider.enabled = m_hasBeenFrozen;
     }
 
     private void FreezeChildren()
     {
+        for (int index = 0; index < transform.childCount; index++)
+        {
+            transform.GetChild(index).position = m_startPositions[index];
+            transform.GetChild(index).eulerAngles = (m_startRotations[index]);
+            //  transform.rotation = Quaternion.Euler(new Vector3());
+
+
+   
+        }
         foreach (Rigidbody2D rigidbody in m_childrenRigidbodies)
         {
             rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
         }
         m_hasBeenFrozen = true;
+
+        List<Transform> children = new List<Transform>();
+        for (int index = 0; index < transform.childCount; index++)
+        {
+            children.Add(transform.GetChild(index));
+        }
+
+        transform.DetachChildren();
+        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+        foreach (Transform child in children)
+        {
+            child.parent = transform;
+        }
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, -transform.GetChild(1).eulerAngles.z));
     }
 
     private void UnFreezeChildren()
