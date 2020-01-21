@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ComponentInteraction : MonoBehaviour
 {
+    
     private const float LONG_CLICK_TIME = 0.1f;
 
     private float m_clickStartPosX;
@@ -306,7 +307,6 @@ public class ComponentInteraction : MonoBehaviour
         {
             m_rightClicked = !m_rightClicked;
             m_originalAngle = gameObject.transform.Find("Ball").transform.eulerAngles.z;
-
         }
     }
 
