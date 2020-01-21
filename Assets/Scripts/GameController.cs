@@ -8,9 +8,11 @@ public class GameController : MonoBehaviour
     public GameObject m_startSimButton;
     public GameObject m_resetButton;
     public GameObject m_stopSimButton;
+    private bool m_wreckingBallReset;
 
     void Start()
     {
+        m_wreckingBallReset = false;
         DisableObjects();
     }
 
@@ -24,7 +26,6 @@ public class GameController : MonoBehaviour
         {
             EnableObjects();
         }
-        //Physics2D.autoSimulation = m_isSimRunning;
         m_startSimButton.SetActive(!m_isSimRunning);
         m_resetButton.SetActive(!m_isSimRunning);
         m_stopSimButton.SetActive(m_isSimRunning);
@@ -36,6 +37,7 @@ public class GameController : MonoBehaviour
     }
     public void StopSim()
     {
+        GameObject.FindGameObjectWithTag("Start").GetComponent<StartPointScript>().Reset();
         m_isSimRunning = false;
     }
     public bool IsSimRunning()
@@ -46,14 +48,13 @@ public class GameController : MonoBehaviour
     public void DisableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
-        var wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.FreezeAll;
         }
-        foreach  (var ball in wreckingBalls)
+        if (!m_wreckingBallReset)
         {
-            ball.GetComponent<WreckingBallFreezeBehaviour>().m_freeze = true;
+            ResetWreckingBalls();
         }
     }
 
@@ -64,11 +65,50 @@ public class GameController : MonoBehaviour
         {
             obj.constraints = RigidbodyConstraints2D.None;
         }
-        var wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
-
+        GameObject[] wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
         foreach (var ball in wreckingBalls)
         {
-            ball.GetComponent<WreckingBallFreezeBehaviour>().m_freeze = false;
+            ball.transform.Find("AnchorPoint").GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
         }
+        m_wreckingBallReset = false;
     }
+
+    private void ResetWreckingBalls()
+    {
+        GameObject[] wreckingBalls = GameObject.FindGameObjectsWithTag("WreckingBall");
+        foreach (var ball in wreckingBalls)
+        {
+            foreach (Transform child in ball.transform)
+            {
+                float xPosition = 0;
+                switch (child.tag)
+                {
+                    case "Ball":
+                        xPosition = -2.8f;
+                        break;
+                    case "AnchorPoint":
+                        xPosition = -0.2f;
+                        break;
+                    case "HingeOne":
+                        xPosition = -0.5f;
+                        break;
+                    case "HingeTwo":
+                        xPosition = -1.0f;
+                        break;
+                    case "HingeThree":
+                        xPosition = -1.5f;
+                        break;
+                    case "HingeFour":
+                        xPosition = -2.0f;
+                        break;
+                    default:
+                        break;
+                }
+                child.localPosition = new Vector3(xPosition, 0.0f, 0.0f);
+                child.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+            }
+        }
+        m_wreckingBallReset = true;
+    }
+    
 }

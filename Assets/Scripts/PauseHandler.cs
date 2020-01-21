@@ -5,12 +5,15 @@ using UnityEngine;
 public class PauseHandler : MonoBehaviour
 {
     public GameObject m_pausePanel;
+    public GameObject m_pauseButton;
     private bool m_paused;
 
     void Start()
     {
         m_paused = false;
         m_pausePanel.SetActive(false);
+        m_pauseButton.SetActive(true);
+        Time.timeScale = 1;
     }
 
     // Update is called once per frame
@@ -26,6 +29,7 @@ public class PauseHandler : MonoBehaviour
     {
         m_paused = !m_paused;
         m_pausePanel.SetActive(!m_pausePanel.activeSelf);
+        m_pauseButton.SetActive(!m_pauseButton.activeSelf);
 
         if (m_paused)
         {
