@@ -16,7 +16,6 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(m_isSimRunning);
         if(!m_isSimRunning)
         {
             DisableObjects();
@@ -25,7 +24,6 @@ public class GameController : MonoBehaviour
         {
             EnableObjects();
         }
-        //Physics2D.autoSimulation = m_isSimRunning;
         m_startSimButton.SetActive(!m_isSimRunning);
         m_resetButton.SetActive(!m_isSimRunning);
         m_stopSimButton.SetActive(m_isSimRunning);
