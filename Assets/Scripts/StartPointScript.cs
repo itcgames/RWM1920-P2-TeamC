@@ -12,4 +12,10 @@ public class StartPointScript : MonoBehaviour
         m_player = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
         m_player.transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
     }
+
+    public void Reset()
+    {
+        GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
+        m_player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+    }
 }

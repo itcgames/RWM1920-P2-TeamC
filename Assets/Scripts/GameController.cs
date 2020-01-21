@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(m_isSimRunning);
         if(!m_isSimRunning)
         {
             DisableObjects();
@@ -36,6 +37,7 @@ public class GameController : MonoBehaviour
     }
     public void StopSim()
     {
+        GameObject.FindGameObjectWithTag("Start").GetComponent<StartPointScript>().Reset();
         m_isSimRunning = false;
     }
     public bool IsSimRunning()

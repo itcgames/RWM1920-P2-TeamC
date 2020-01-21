@@ -251,6 +251,7 @@ MonoBehaviour:
   fireDelay: 1
   autoFire: 1
   fireOnce: 1
+  fireOnContact: 1
 --- !u!114 &1998847898285694744
 MonoBehaviour:
   m_ObjectHideFlags: 0
