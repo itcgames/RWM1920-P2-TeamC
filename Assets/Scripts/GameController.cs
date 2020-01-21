@@ -80,7 +80,6 @@ public class GameController : MonoBehaviour
         {
             foreach (Transform child in ball.transform)
             {
-                child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
                 float xPosition = 0;
                 switch (child.tag)
                 {
@@ -105,22 +104,11 @@ public class GameController : MonoBehaviour
                     default:
                         break;
                 }
-                Debug.Log(child.tag);
                 child.localPosition = new Vector3(xPosition, 0.0f, 0.0f);
                 child.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
-                child.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-
             }
         }
         m_wreckingBallReset = true;
-        foreach (var ball in wreckingBalls)
-        {
-            foreach (Transform child in ball.transform)
-            {
-                Vector3 pos = child.position;
-                Vector3 angle = child.eulerAngles;
-            }
-        }
     }
     
 }
