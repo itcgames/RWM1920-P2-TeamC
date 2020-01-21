@@ -316,7 +316,7 @@ public class ComponentInteraction : MonoBehaviour
         var interactiveComps = FindObjectsOfType<ComponentInteraction>();
         bool anchorSet = false;
         //get balloon's controller
-        InteractiveBalloonController balloon = gameObject.GetComponentInChildren<InteractiveBalloonController>();
+        NewBalloonController balloon = gameObject.GetComponentInChildren<NewBalloonController>();
 
         //find if any object with interactive script was clicked
         foreach (var comp in interactiveComps)
