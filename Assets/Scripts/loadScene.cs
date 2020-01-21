@@ -12,6 +12,11 @@ public class loadScene : MonoBehaviour
         SceneManager.LoadScene(t_scene, LoadSceneMode.Single);
     }
 
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void LoadNextLevel()
     {
         string name = SceneManager.GetActiveScene().name;
