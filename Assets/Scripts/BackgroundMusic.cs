@@ -11,7 +11,7 @@ public class BackgroundMusic : MonoBehaviour
     {
         m_source = transform.GetComponent<AudioSource>();
         m_source.clip = m_backgroundMusicSFX;
-        m_source.volume = 0.015f;
+        m_source.volume = 0.3f;
         m_source.Play();
     }
 
