@@ -26,7 +26,6 @@ public class GameController : MonoBehaviour
         {
             EnableObjects();
         }
-        //Physics2D.autoSimulation = m_isSimRunning;
         m_startSimButton.SetActive(!m_isSimRunning);
         m_resetButton.SetActive(!m_isSimRunning);
         m_stopSimButton.SetActive(m_isSimRunning);
@@ -38,6 +37,7 @@ public class GameController : MonoBehaviour
     }
     public void StopSim()
     {
+        GameObject.FindGameObjectWithTag("Start").GetComponent<StartPointScript>().Reset();
         m_isSimRunning = false;
     }
     public bool IsSimRunning()
