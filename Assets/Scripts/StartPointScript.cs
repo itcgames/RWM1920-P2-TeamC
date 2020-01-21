@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class StartPointScript : MonoBehaviour
 {
-    private GameObject m_player;
     private SpriteRenderer m_sprite;
     void Start()
     {
         m_sprite = GetComponent<SpriteRenderer>();
-        m_player = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
-        m_player.transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
+        GameObject player = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
+        player.transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
     }
 
     public void Reset()
     {
         GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
-        m_player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>().velocity = Vector3.zero;
     }
 }
