@@ -2,7 +2,8 @@
     "name": "Temp",
     "references": [
         "CakeSlice",
-        "BalloonScripts"
+        "BalloonScripts",
+        "Scripts"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
