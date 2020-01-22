@@ -316,7 +316,7 @@ public class ComponentInteraction : MonoBehaviour
         var interactiveComps = FindObjectsOfType<ComponentInteraction>();
         bool anchorSet = false;
         //get balloon's controller
-        NewBalloonController balloon = gameObject.GetComponentInChildren<NewBalloonController>();
+        NewBalloonController balloon = gameObject.GetComponent<NewBalloonController>();
 
         //find if any object with interactive script was clicked
         foreach (var comp in interactiveComps)
@@ -325,7 +325,7 @@ public class ComponentInteraction : MonoBehaviour
             if (comp.m_rightClicked)
             {
                 //set anchor to that GameObject
-                balloon.SetAnchor(comp.gameObject);
+                balloon.SetAnchor(comp.gameObject, Vector3.Distance(comp.transform.position, balloon.transform.GetChild(0).position));
                 //reset that object's bool
                 comp.m_rightClicked = false;
                 //anchor has been set
@@ -352,7 +352,7 @@ public class ComponentInteraction : MonoBehaviour
             //set anchor to static point where mouse right clicked
             m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
             //set the anchor
-            balloon.SetAnchor(m_anchor);
+            balloon.SetAnchor(m_anchor, Vector3.Distance(m_anchor.transform.position, balloon.transform.GetChild(0).position));
         }
     }
 
