@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ComponentInteraction : MonoBehaviour
 {
-    
+
     private const float LONG_CLICK_TIME = 0.1f;
 
     private float m_clickStartPosX;
@@ -15,6 +15,7 @@ public class ComponentInteraction : MonoBehaviour
     private float m_mouseDownTime;
     private List<cakeslice.Outline> m_outlineController;
 
+    //[System.NonSerialized]
     private bool m_selected;
     [System.NonSerialized]
     public bool m_rightClicked;
@@ -23,29 +24,38 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
 
-    private Vector3 m_startPosition;
-	private GameController m_controller;
+    [System.NonSerialized]
+    public Vector3 m_startPosition;
+    private GameController m_controller;
+
+
+    private bool m_spawnedOnGameController;
+    private bool m_gameControllerDrag;
+    private bool m_init = true;
     // Start is called before the first frame update
     void Start()
     {
-        m_mouseDragStart = new Vector3(9999, 9999);
-        if (GameObject.FindGameObjectWithTag("GameController") != null)
+        if (m_init)
         {
-            m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>(); 
+            Init();
         }
-        m_outlineController = new List<cakeslice.Outline>(gameObject.GetComponentsInChildren<cakeslice.Outline>());
-        m_rightClicked = false;
-        m_selected = false;
-        m_rb2 = gameObject.GetComponent<Rigidbody2D>();
-        m_click = false;
-        m_dragged = false;
-        m_startPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-		if(m_selected && m_controller != null)
+        if (m_gameControllerDrag)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                if (outline.color == 0)
+                {
+                    m_startPosition = transform.position;
+                }
+            }
+        }
+
+        if (m_selected && m_controller != null)
         {
             m_selected = !m_controller.IsSimRunning();
             if (!m_selected)
@@ -53,7 +63,7 @@ public class ComponentInteraction : MonoBehaviour
                 UnselectComponent();
             }
         }
-		if (m_selected)
+        if (m_selected)
         {
             // long click effect (consider 
             if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
@@ -71,7 +81,7 @@ public class ComponentInteraction : MonoBehaviour
                 {
                     RotateTowardsMouse();
                 }
-                else if(CompareTag("WreckingBall"))
+                else if (CompareTag("WreckingBall"))
                 {
                     RotateAllTowardsMouse();
                 }
@@ -146,6 +156,11 @@ public class ComponentInteraction : MonoBehaviour
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
         m_click = true;
+
+        if (m_spawnedOnGameController)
+        {
+            m_spawnedOnGameController = false;
+        }
     }
 
     private void OnMouseUp()
@@ -195,6 +210,41 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
+    public void SelectFromGameController()
+    {
+        SelectComponent();
+
+        m_gameControllerDrag = true;
+    }
+
+    public void UnselectFromGameController()
+    {
+        UnselectComponent();
+        m_gameControllerDrag = false;
+
+        foreach (var outline in m_outlineController)
+        {
+            if (outline.color == 1)
+            {
+                transform.position = m_startPosition;
+            }
+        }
+        ContactFilter2D newContactFilter = new ContactFilter2D();
+        newContactFilter.SetDepth(0.0f, 2.0f);
+        newContactFilter.useDepth = true;
+        Collider2D[] hitNodes = new Collider2D[10];
+        Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
+
+        foreach (var collider in hitNodes)
+        {
+            if (collider != null && collider.CompareTag("GameController"))
+            {
+                Destroy(gameObject);
+            }
+        }
+
+    }
+
     private void SelectComponent()
     {
         //select this object
@@ -203,10 +253,13 @@ public class ComponentInteraction : MonoBehaviour
         m_rightClicked = false;
 
         //for each outline script on this gameobject and its children
-        foreach (var outline in m_outlineController)
+        if (m_outlineController != null)
         {
-            //enable outline drawing
-            outline.eraseRenderer = false;
+            foreach (var outline in m_outlineController)
+            {
+                //enable outline drawing
+                outline.eraseRenderer = false;
+            }
         }
     }
 
@@ -259,6 +312,14 @@ public class ComponentInteraction : MonoBehaviour
             {
                 outline.color = 1;
             }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("GameController"))
+        {
+            m_spawnedOnGameController = true;
         }
     }
 
@@ -384,7 +445,7 @@ public class ComponentInteraction : MonoBehaviour
         Transform anchor = transform.Find("AnchorPoint");
         Transform ball = transform.Find("Ball");
         List<Transform> hinges = new List<Transform>();
-        for(int index = 0; index < 4; index++)
+        for (int index = 0; index < 4; index++)
         {
             hinges.Add(transform.Find("Hinge" + (index + 1).ToString()));
         }
@@ -395,7 +456,7 @@ public class ComponentInteraction : MonoBehaviour
         for (int index = 0; index < 4; index++)
         {
             hinges[index].rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle));
-            hinges[index].position = new Vector2(dist*(Mathf.Cos(angle * Mathf.Deg2Rad)), dist*(Mathf.Sin(angle * Mathf.Deg2Rad)));
+            hinges[index].position = new Vector2(dist * (Mathf.Cos(angle * Mathf.Deg2Rad)), dist * (Mathf.Sin(angle * Mathf.Deg2Rad)));
             hinges[index].position += anchor.position;
             dist += 0.5f;
         }
@@ -403,14 +464,14 @@ public class ComponentInteraction : MonoBehaviour
         ball.position = new Vector2(dist * (Mathf.Cos(angle * Mathf.Deg2Rad)), dist * (Mathf.Sin(angle * Mathf.Deg2Rad)));
         ball.position += anchor.position;
         List<Transform> children = new List<Transform>();
-        for(int index = 0; index < transform.childCount; index++)
+        for (int index = 0; index < transform.childCount; index++)
         {
             children.Add(transform.GetChild(index));
         }
 
         transform.DetachChildren();
         transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, angle + 180.0f));
-        foreach  (Transform child in children)
+        foreach (Transform child in children)
         {
             child.parent = transform;
         }
@@ -425,5 +486,52 @@ public class ComponentInteraction : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         m_clickStartPosX = mousePos.x - transform.localPosition.x;
         m_clickStartPosY = mousePos.y - transform.localPosition.y;
+    }
+
+    public void Init()
+    {
+        m_init = false;
+        m_spawnedOnGameController = false;
+        m_gameControllerDrag = false;
+
+        m_mouseDragStart = new Vector3(9999, 9999);
+        if (GameObject.FindGameObjectWithTag("GameController") != null)
+        {
+            m_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        }
+        m_outlineController = new List<cakeslice.Outline>(gameObject.GetComponentsInChildren<cakeslice.Outline>());
+        m_rightClicked = false;
+
+        if (!m_selected)
+        {
+            m_selected = false;
+        }
+
+        m_rb2 = gameObject.GetComponent<Rigidbody2D>();
+        m_click = false;
+        m_dragged = false;
+        m_startPosition = transform.position;
+    }
+
+    /// <summary>
+    /// Returns true if gameObject is currently overlapping with a different collider
+    /// </summary>
+    /// <returns></returns>
+    private bool ColliderOverlaps()
+    {
+        ContactFilter2D newContactFilter = new ContactFilter2D();
+        newContactFilter.SetDepth(0.0f, 2.0f);
+        newContactFilter.useDepth = true;
+        Collider2D[] hitNodes = new Collider2D[10];
+        Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
+
+        foreach (var collider in hitNodes)
+        {
+            if (collider != null)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

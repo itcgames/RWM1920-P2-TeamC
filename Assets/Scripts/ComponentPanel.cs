@@ -22,32 +22,41 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             m_placeObject = Instantiate(m_obj, this.transform.position, Quaternion.identity);
             m_followPointer = true;
-            m_placeObject.GetComponent<Collider2D>().enabled = false; 
-            foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
-            {
-                c.enabled = false;
-            }
+
+            //m_placeObject.GetComponent<Collider2D>().enabled = false;
+            //foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
+            //{
+            //    c.enabled = false;
+            //}
+
+            ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
+            placedObjectScript.Init();
+            placedObjectScript.SelectFromGameController();
         }
     }
 
     //Detect if clicks are no longer registering
     public void OnPointerUp(PointerEventData pointerEventData)
     {
-        m_placeObject.GetComponent<Collider2D>().enabled = true;
-        foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
-        {
-            c.enabled = true;
-        }
+        //m_placeObject.GetComponent<Collider2D>().enabled = true;
+        //foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
+        //{
+        //    c.enabled = true;
+        //}
+
+        ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
+        placedObjectScript.UnselectFromGameController();
+
         m_followPointer = false;
     }
 
     void Update()
     {
-        if(m_followPointer && m_placeObject != null)
+        if (m_followPointer && m_placeObject != null)
         {
             Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             newPosition.z = 1;
-            m_placeObject.transform.position = newPosition;
+            m_placeObject.transform.position = newPosition;            
         }
     }
 }
