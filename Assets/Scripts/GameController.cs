@@ -48,6 +48,7 @@ public class GameController : MonoBehaviour
     public void DisableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -56,11 +57,17 @@ public class GameController : MonoBehaviour
         {
             ResetWreckingBalls();
         }
+
+        foreach(GameObject cannon in cannons)
+        {
+            cannon.GetComponent<FireObject>().fireOnContact = false;
+        }
     }
 
     public void EnableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.None;
@@ -71,6 +78,11 @@ public class GameController : MonoBehaviour
             ball.transform.Find("AnchorPoint").GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
         }
         m_wreckingBallReset = false;
+
+        foreach (GameObject cannon in cannons)
+        {
+            cannon.GetComponent<FireObject>().fireOnContact = true;
+        }
     }
 
     private void ResetWreckingBalls()
