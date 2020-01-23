@@ -20,7 +20,9 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         if (!m_controller.IsSimRunning())
         {
-            m_placeObject = Instantiate(m_obj, this.transform.position, Quaternion.identity);
+            Vector3 spawnPos = transform.position;
+            spawnPos.z = 0;
+            m_placeObject = Instantiate(m_obj, spawnPos, Quaternion.identity);
             m_followPointer = true;
 
             ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
@@ -43,7 +45,7 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         if (m_followPointer && m_placeObject != null)
         {
             Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            newPosition.z = 1;
+            newPosition.z = 0;
             m_placeObject.transform.position = newPosition;            
         }
     }

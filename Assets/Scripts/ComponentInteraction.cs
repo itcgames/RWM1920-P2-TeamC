@@ -33,10 +33,10 @@ public class ComponentInteraction : MonoBehaviour
     private Vector3 m_startPosition;
     private GameController m_controller;
 
-    private bool m_spawnedOnGameController;
     private bool m_gameControllerDrag;
     private bool m_init = true;
     private Collider2D[] m_overlapArray;
+    private Vector3 m_spawnPos;
     ContactFilter2D m_overlapFilter;
 
     // Start is called before the first frame update
@@ -51,19 +51,6 @@ public class ComponentInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!ColliderOverlaps())
-        {
-            ChangeOutlineColour(SELECTED_COLOUR);
-        }
-        else
-        {
-            ChangeOutlineColour(OBSTRUCTED_COLOUR);
-            if (m_gameControllerDrag)
-            {
-                m_startPosition = transform.position;
-            }
-        }
-
         if (m_selected && m_controller != null)
         {
             m_selected = !m_controller.IsSimRunning();
@@ -101,6 +88,16 @@ public class ComponentInteraction : MonoBehaviour
         {
             UnselectComponent();
         }
+
+        if (!ColliderOverlaps())
+        {
+            ChangeOutlineColour(SELECTED_COLOUR);
+            m_startPosition = transform.position;
+        }
+        else
+        {
+            ChangeOutlineColour(OBSTRUCTED_COLOUR);
+        }
     }
 
     void MoveComponent()
@@ -119,7 +116,7 @@ public class ComponentInteraction : MonoBehaviour
         Vector2 mousePos;
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        gameObject.transform.localPosition = new Vector2(mousePos.x - m_clickStartPosX, mousePos.y - m_clickStartPosY);
+        gameObject.transform.position = new Vector3(mousePos.x - m_clickStartPosX, mousePos.y - m_clickStartPosY, 0.0f);
     }
 
     private void OnMouseDrag()
@@ -165,11 +162,6 @@ public class ComponentInteraction : MonoBehaviour
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
         m_click = true;
-
-        if (m_spawnedOnGameController)
-        {
-            m_spawnedOnGameController = false;
-        }
     }
 
     private void OnMouseUp()
@@ -205,15 +197,10 @@ public class ComponentInteraction : MonoBehaviour
         m_dragged = false;
         m_mouseDragStart = new Vector2(9999, 9999);
 
-        //bool updateStartingPos = true;
-        if (!IsOutlineColour(OBSTRUCTED_COLOUR))
-        {
-            //    updateStartingPos = false;
-            //}
-            //if (updateStartingPos)
-            //{
-            m_startPosition = gameObject.transform.position;
-        }
+        //if (!IsOutlineColour(OBSTRUCTED_COLOUR))
+        //{
+        //    m_startPosition = gameObject.transform.position;
+        //}
     }
 
     public void SelectFromGameController()
@@ -225,53 +212,35 @@ public class ComponentInteraction : MonoBehaviour
 
     public void UnselectFromGameController()
     {
-        UnselectComponent();
+        //UnselectComponent();
         m_gameControllerDrag = false;
-
-        //foreach (var outline in m_outlineController)
-        //{
-        //    if (outline.color == 1)
-        //    {
-        //        transform.position = m_startPosition;
-        //    }
-        //}
-        if (IsOutlineColour(OBSTRUCTED_COLOUR))
-        {
-            transform.position = m_startPosition;
-        }
-
-        //ContactFilter2D newContactFilter = new ContactFilter2D();
-        //newContactFilter.SetDepth(0.0f, 2.0f);
-        //newContactFilter.useDepth = true;
-        //Collider2D[] hitNodes = new Collider2D[10];
-        //Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
 
         if (ColliderOverlaps())
         {
-            foreach (var collider in m_overlapArray)
-            {
-                if (collider != null)
-                {
-                    if (collider.CompareTag("GameController"))
-                    {
-                        Destroy(gameObject);
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
+            transform.position = m_startPosition;
+        }
+        if (transform.position == m_spawnPos)
+        {
+            Destroy(gameObject);
         }
 
-        //foreach (var collider in hitNodes)
+        //if (ColliderOverlaps())
         //{
-        //    if (collider != null && collider.CompareTag("GameController"))
+        //    foreach (var collider in m_overlapArray)
         //    {
-        //        Destroy(gameObject);
+        //        if (collider != null)
+        //        {
+        //            if (collider.CompareTag("GameController"))
+        //            {
+        //                Destroy(gameObject);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            break;
+        //        }
         //    }
         //}
-
     }
 
     private void SelectComponent()
@@ -306,33 +275,6 @@ public class ComponentInteraction : MonoBehaviour
         //erase the renderer from outline as we unselected
         EnableOutlineRenderer(DISABLE_RENDERER);
     }
-
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    if (m_selected)
-    //    {
-    //        ChangeOutlineColour(SELECTED_COLOUR);
-    //    }
-    //}
-
-    //private void OnCollisionStay2D(Collision2D collision)
-    //{
-    //    if (m_selected)
-    //    {
-    //        foreach (var outline in m_outlineController)
-    //        {
-    //            outline.color = 1;
-    //        }
-    //    }
-    //}
-
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("GameController"))
-    //    {
-    //        m_spawnedOnGameController = true;
-    //    }
-    //}
 
     private void HandleComponentAlteration()
     {
@@ -381,9 +323,16 @@ public class ComponentInteraction : MonoBehaviour
 
     private void HandleBalloon()
     {
+        //if we have created an anchor before
+        if (m_anchor != null)
+        {
+            //destory it
+            Destroy(m_anchor);
+        }
+
         //get all interactive scripts
         var interactiveComps = FindObjectsOfType<ComponentInteraction>();
-        bool anchorSet = false;
+
         //get balloon's controller
         NewBalloonController balloon = gameObject.GetComponent<NewBalloonController>();
 
@@ -397,32 +346,29 @@ public class ComponentInteraction : MonoBehaviour
                 balloon.SetAnchor(comp.gameObject, Vector3.Distance(comp.transform.position, balloon.transform.GetChild(0).position));
                 //reset that object's bool
                 comp.m_rightClicked = false;
-                //anchor has been set
-                anchorSet = true;
-                //we're done, break out of loop
-                break;
+
+                //anchor set to rigidBody, leave the function
+                return;
             }
         }
 
-        //if we still haven't anchored
-        if (!anchorSet)
+        //get mouse pos
+        Vector2 tempMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player.GetComponent<Collider2D>().OverlapPoint(tempMousePos))//If the collider overlaps the mouse coordinates
         {
-            //if we have created an anchor before
-            if (m_anchor != null)
-            {
-                //destory it
-                Destroy(m_anchor);
-            }
-
-            //create new empty anchor
-            m_anchor = new GameObject("Anchor");
-            //get mouse pos
-            Vector2 tempPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //set anchor to static point where mouse right clicked
-            m_anchor.transform.position = new Vector3(tempPos.x, tempPos.y, 0.0f);
-            //set the anchor
-            balloon.SetAnchor(m_anchor, Vector3.Distance(m_anchor.transform.position, balloon.transform.GetChild(0).position));
+            //set anchor to the player
+            balloon.SetAnchor(player, Vector3.Distance(player.transform.position, balloon.transform.GetChild(0).position));
+            //anchor set to rigidBody, leave the function
+            return;
         }
+
+        //create new empty anchor
+        m_anchor = new GameObject("Anchor");
+        //set anchor to static point where mouse right clicked
+        m_anchor.transform.position = new Vector3(tempMousePos.x, tempMousePos.y, 0.0f);
+        //set the anchor
+        balloon.SetAnchor(m_anchor, Vector3.Distance(m_anchor.transform.position, balloon.transform.GetChild(0).position));
     }
 
     //make GameObject point towards the mouse
@@ -499,22 +445,12 @@ public class ComponentInteraction : MonoBehaviour
     public void Init()
     {
         m_init = false;
+        m_spawnPos = transform.position;
 
         m_overlapArray = new Collider2D[100];
         m_overlapFilter = new ContactFilter2D();
         m_overlapFilter.SetDepth(0.0f, 2.0f);
 
-        //if (gameObject.CompareTag("Fan"))
-        //{
-        //    var childrenColliders = gameObject.GetComponentsInChildren<Collider2D>();
-
-        //    foreach (var collider in childrenColliders)
-        //    {
-        //        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider);
-        //    }
-        //}
-
-        m_spawnedOnGameController = false;
         m_gameControllerDrag = false;
 
         m_mouseDragStart = new Vector3(9999, 9999);
@@ -542,22 +478,11 @@ public class ComponentInteraction : MonoBehaviour
     /// <returns>bool</returns>
     private bool ColliderOverlaps()
     {
+        Physics2D.SyncTransforms();
+
         Array.Clear(m_overlapArray, 0, m_overlapArray.Length);
 
         var childrenColliders = gameObject.GetComponentsInChildren<Collider2D>();
-        //foreach (var collider in childrenColliders)
-        //{
-        //    if (collider != GetComponent<Collider2D>())
-        //    {
-        //        Physics2D.IgnoreCollision(collider, GetComponent<Collider2D>());
-        //    }
-        //}
-
-        //if (CompareTag("Fan"))
-        //{
-        //    LayerMask mask = LayerMask.GetMask("FanDragTrigger");
-        //    m_overlapFilter.layerMask = mask;
-        //}
 
         if (CompareTag("Fan"))
         {
@@ -565,17 +490,16 @@ public class ComponentInteraction : MonoBehaviour
 
             foreach (var collider in childrenColliders)
             {
-                //change edge collider on fanHead to polygon?
                 if (collider != GetComponent<Collider2D>() && !collider.isTrigger)
                 {
-                    Collider2D[] tempArr = new Collider2D[100]; 
+                    Collider2D[] tempArr = new Collider2D[100];
                     Physics2D.OverlapCollider(collider, m_overlapFilter, tempArr);
 
                     foreach (var tempCol in tempArr)
                     {
                         if (tempCol != null)
                         {
-                            childList.Add(tempCol); 
+                            childList.Add(tempCol);
                         }
                         else
                         {
