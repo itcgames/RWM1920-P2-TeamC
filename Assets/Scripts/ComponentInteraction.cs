@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ButtonClickBehaviour;
 
 public class ComponentInteraction : MonoBehaviour
 {
@@ -25,6 +26,18 @@ public class ComponentInteraction : MonoBehaviour
 
     private Vector3 m_startPosition;
 	private GameController m_controller;
+
+    private TouchInterfaceBehaviour buttons;
+
+    private bool moveButtonPressed;
+    private bool rightClickButtonPressed;
+    private bool cancelButtonPressed;
+    private bool deleteButtonPressed;
+
+    private bool moveNotRotate = true;
+    private const bool MOVE_FUNCTIONALITY = true;
+    private const bool RIGHT_CLICK_FUNCTIONALITY = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,48 +53,69 @@ public class ComponentInteraction : MonoBehaviour
         m_click = false;
         m_dragged = false;
         m_startPosition = transform.position;
+        moveButtonPressed = false;
+        rightClickButtonPressed = false;
+        deleteButtonPressed = false;
+        cancelButtonPressed = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (deleteButtonPressed)
+        {
+            HandleDeleteButtonPressed();
+        }
+        else if (cancelButtonPressed)
+        {
+            HandleCancelButtonPressed();
+        }
+            
 		if(m_selected && m_controller != null)
         {
             m_selected = !m_controller.IsSimRunning();
             if (!m_selected)
             {
-                UnselectComponent();
+               // UnselectComponent();
             }
         }
 		if (m_selected)
         {
             // long click effect (consider 
-            if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
-            {
-                MoveComponent();
-            }
 
-            if (Input.GetMouseButtonDown(1))
+            if (moveNotRotate)
             {
-                HandleComponentAlteration();
-            }
-            if (m_rightClicked)
-            {
-                if (CompareTag("Fan") || CompareTag("Cannon"))
+                if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
                 {
-                    RotateTowardsMouse();
+                    MoveComponent();
                 }
-                else if(CompareTag("WreckingBall"))
+            }
+            else
+            {
+
+
+                if (Input.GetMouseButtonDown(0))
                 {
-                    RotateAllTowardsMouse();
+                    HandleComponentAlteration();
+                }
+                if (m_rightClicked)
+                {
+                    if (CompareTag("Fan") || CompareTag("Cannon"))
+                    {
+                        RotateTowardsMouse();
+                    }
+                    else if (CompareTag("WreckingBall"))
+                    {
+                        RotateAllTowardsMouse();
+                    }
                 }
             }
         }
 
-        if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
-        {
-            UnselectComponent();
-        }
+        //if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
+        //{
+        //    UnselectComponent();
+        //}
     }
 
     void MoveComponent()
@@ -122,19 +156,20 @@ public class ComponentInteraction : MonoBehaviour
                 }
             }
         }
-        else if (!m_selected)
-        {
-            //Debug.Log("mouse long click");
-            SelectComponent();
-        }
+        //else if (!m_selected)
+        //{
+        //    //Debug.Log("mouse long click");
+        //    SelectComponent();
+        //}
     }
 
     private void OnMouseOver()
     {
         //if we hover over the object and RMB click
-        if (!m_selected && Input.GetMouseButtonDown(1))
+        if (!m_selected && Input.GetMouseButtonDown(0))
         {
             //flip bool
+            
             m_rightClicked = true;
         }
     }
@@ -146,6 +181,14 @@ public class ComponentInteraction : MonoBehaviour
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
         m_click = true;
+        buttons = GameObject.FindGameObjectWithTag("TouchInterface").GetComponent<TouchInterfaceBehaviour>();
+    }
+
+    private void SpawnButtons()
+    {
+        GameObject buttons = Instantiate(Resources.Load<GameObject>("Prefabs/TouchInterface"));
+        buttons.transform.SetParent(transform);
+
     }
 
     private void OnMouseUp()
@@ -193,20 +236,33 @@ public class ComponentInteraction : MonoBehaviour
         {
             m_startPosition = gameObject.transform.position;
         }
+        
     }
 
     private void SelectComponent()
     {
-        //select this object
-        m_selected = true;
-        //reset rightclick just in case
-        m_rightClicked = false;
-
-        //for each outline script on this gameobject and its children
-        foreach (var outline in m_outlineController)
+        var components = FindObjectsOfType<ComponentInteraction>();
+        bool canSelect = true;
+        foreach (var compoenent in components)
         {
-            //enable outline drawing
-            outline.eraseRenderer = false;
+            if(compoenent.GetSelected())
+            {
+                canSelect = false;
+            }
+        }
+        if (canSelect)
+        {
+            //select this object
+            m_selected = true;
+            //reset rightclick just in case
+            m_rightClicked = false;
+
+            //for each outline script on this gameobject and its children
+            foreach (var outline in m_outlineController)
+            {
+                //enable outline drawing
+                outline.eraseRenderer = false;
+            }
         }
     }
 
@@ -238,7 +294,16 @@ public class ComponentInteraction : MonoBehaviour
             //disable outline drawing
             outline.eraseRenderer = true;
         }
-    }
+
+        foreach (Transform child in transform)
+        {
+            if (child.CompareTag("TouchInterface"))
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        if(cancelButtonPressed) cancelButtonPressed = false;
+    } 
 
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -425,5 +490,53 @@ public class ComponentInteraction : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         m_clickStartPosX = mousePos.x - transform.localPosition.x;
         m_clickStartPosY = mousePos.y - transform.localPosition.y;
+    }
+
+    private void HandleMoveButtonPressed()
+    {
+        
+    }
+
+    private void HandleRightClickButtonPressed()
+    {
+    }
+
+    public void HandleCancelButtonPressed()
+    {
+        UnselectComponent();
+    }
+
+    public void HandleDeleteButtonPressed()
+    {
+        Destroy(gameObject);
+    }
+
+    public void UpdateButtonPressed(string buttonName)
+    {
+        //            GameObject.FindGameObjectWithTag("TouchInterface").GetComponent<TouchInterfaceBehaviour>().Activate();
+
+       
+        cancelButtonPressed = false;
+        deleteButtonPressed = false;
+        switch (buttonName)
+        {
+            case "MoveButton":
+                moveNotRotate = !moveNotRotate;
+                FindObjectOfType<MoveButtonBehaviour>().ToggleIsSpriteType();
+                break;
+            case "CancelButton":
+                cancelButtonPressed = true;
+                break;
+            case "DeleteButton":
+                deleteButtonPressed = true;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public bool GetSelected()
+    {
+        return m_selected;
     }
 }
