@@ -8,13 +8,14 @@ public class optionTransitionControl : MonoBehaviour
     private Vector3 m_inView;
     private Vector3 m_outOfView;
     private int m_offset = 1000;
-    // Start is called before the first frame update
+    private float m_transitionsRate = 20;//Move X  Pixels Per Second
+
     void Start()
     {
         m_inView = transform.position;
         m_outOfView = m_inView;
         m_outOfView.y = m_outOfView.y + m_offset;
-        transform.position = m_outOfView;
+        transform.position = m_outOfView;   
     }
 
     public void SetTransition(bool t_transition)
@@ -39,7 +40,7 @@ public class optionTransitionControl : MonoBehaviour
     {
         if (transform.position.y < m_outOfView.y)
         {
-            transform.position = transform.position + new Vector3(0, 20, 0);
+            transform.position = transform.position + new Vector3(0, m_transitionsRate, 0);
         }
     }
 
@@ -47,7 +48,7 @@ public class optionTransitionControl : MonoBehaviour
     {
         if (transform.position.y > m_inView.y)
         {
-            transform.position = transform.position - new Vector3(0, 20, 0);
+            transform.position = transform.position - new Vector3(0, m_transitionsRate, 0);
         }
     }
 }
