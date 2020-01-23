@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2000290422648941756}
   - component: {fileID: 2000290422648941746}
   - component: {fileID: 2000290422648941747}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4783,7 +4783,7 @@ GameObject:
   - component: {fileID: 2000290424127494317}
   - component: {fileID: 5871449691755438909}
   - component: {fileID: 7840204581620136141}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: AirFlow
   m_TagString: FanAOE
   m_Icon: {fileID: 0}

@@ -23,12 +23,6 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             m_placeObject = Instantiate(m_obj, this.transform.position, Quaternion.identity);
             m_followPointer = true;
 
-            //m_placeObject.GetComponent<Collider2D>().enabled = false;
-            //foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
-            //{
-            //    c.enabled = false;
-            //}
-
             ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
             placedObjectScript.Init();
             placedObjectScript.SelectFromGameController();
@@ -38,12 +32,6 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     //Detect if clicks are no longer registering
     public void OnPointerUp(PointerEventData pointerEventData)
     {
-        //m_placeObject.GetComponent<Collider2D>().enabled = true;
-        //foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
-        //{
-        //    c.enabled = true;
-        //}
-
         ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
         placedObjectScript.UnselectFromGameController();
 

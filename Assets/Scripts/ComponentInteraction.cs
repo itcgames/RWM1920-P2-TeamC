@@ -1,12 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ComponentInteraction : MonoBehaviour
 {
-
+    //consts
+    private const int SELECTED_COLOUR = 0;
+    private const int OBSTRUCTED_COLOUR = 1;
     private const float LONG_CLICK_TIME = 0.1f;
+    private const bool DISABLE_RENDERER = true;
+    private const bool ENABLE_RENDERER = false;
 
+    //variables
     private float m_clickStartPosX;
     private float m_clickStartPosY;
     private Rigidbody2D m_rb2;
@@ -15,7 +22,6 @@ public class ComponentInteraction : MonoBehaviour
     private float m_mouseDownTime;
     private List<cakeslice.Outline> m_outlineController;
 
-    //[System.NonSerialized]
     private bool m_selected;
     [System.NonSerialized]
     public bool m_rightClicked;
@@ -24,14 +30,15 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
 
-    [System.NonSerialized]
-    public Vector3 m_startPosition;
+    private Vector3 m_startPosition;
     private GameController m_controller;
-
 
     private bool m_spawnedOnGameController;
     private bool m_gameControllerDrag;
     private bool m_init = true;
+    private Collider2D[] m_overlapArray;
+    ContactFilter2D m_overlapFilter;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,14 +51,16 @@ public class ComponentInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_gameControllerDrag)
+        if (!ColliderOverlaps())
         {
-            foreach (var outline in m_outlineController)
+            ChangeOutlineColour(SELECTED_COLOUR);
+        }
+        else
+        {
+            ChangeOutlineColour(OBSTRUCTED_COLOUR);
+            if (m_gameControllerDrag)
             {
-                if (outline.color == 0)
-                {
-                    m_startPosition = transform.position;
-                }
+                m_startPosition = transform.position;
             }
         }
 
@@ -196,16 +205,13 @@ public class ComponentInteraction : MonoBehaviour
         m_dragged = false;
         m_mouseDragStart = new Vector2(9999, 9999);
 
-        bool updateStartingPos = true;
-        for (int i = 0; i < m_outlineController.Count; i++)
+        //bool updateStartingPos = true;
+        if (!IsOutlineColour(OBSTRUCTED_COLOUR))
         {
-            if (m_outlineController[i].color == 1)
-            {
-                updateStartingPos = false;
-            }
-        }
-        if (updateStartingPos)
-        {
+            //    updateStartingPos = false;
+            //}
+            //if (updateStartingPos)
+            //{
             m_startPosition = gameObject.transform.position;
         }
     }
@@ -222,26 +228,49 @@ public class ComponentInteraction : MonoBehaviour
         UnselectComponent();
         m_gameControllerDrag = false;
 
-        foreach (var outline in m_outlineController)
+        //foreach (var outline in m_outlineController)
+        //{
+        //    if (outline.color == 1)
+        //    {
+        //        transform.position = m_startPosition;
+        //    }
+        //}
+        if (IsOutlineColour(OBSTRUCTED_COLOUR))
         {
-            if (outline.color == 1)
-            {
-                transform.position = m_startPosition;
-            }
+            transform.position = m_startPosition;
         }
-        ContactFilter2D newContactFilter = new ContactFilter2D();
-        newContactFilter.SetDepth(0.0f, 2.0f);
-        newContactFilter.useDepth = true;
-        Collider2D[] hitNodes = new Collider2D[10];
-        Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
 
-        foreach (var collider in hitNodes)
+        //ContactFilter2D newContactFilter = new ContactFilter2D();
+        //newContactFilter.SetDepth(0.0f, 2.0f);
+        //newContactFilter.useDepth = true;
+        //Collider2D[] hitNodes = new Collider2D[10];
+        //Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
+
+        if (ColliderOverlaps())
         {
-            if (collider != null && collider.CompareTag("GameController"))
+            foreach (var collider in m_overlapArray)
             {
-                Destroy(gameObject);
+                if (collider != null)
+                {
+                    if (collider.CompareTag("GameController"))
+                    {
+                        Destroy(gameObject);
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
         }
+
+        //foreach (var collider in hitNodes)
+        //{
+        //    if (collider != null && collider.CompareTag("GameController"))
+        //    {
+        //        Destroy(gameObject);
+        //    }
+        //}
 
     }
 
@@ -252,27 +281,16 @@ public class ComponentInteraction : MonoBehaviour
         //reset rightclick just in case
         m_rightClicked = false;
 
-        //for each outline script on this gameobject and its children
-        if (m_outlineController != null)
-        {
-            foreach (var outline in m_outlineController)
-            {
-                //enable outline drawing
-                outline.eraseRenderer = false;
-            }
-        }
+        EnableOutlineRenderer(ENABLE_RENDERER);
     }
 
     private void UnselectComponent()
     {
-        foreach (var outline in m_outlineController)
+        if (IsOutlineColour(OBSTRUCTED_COLOUR))
         {
-            if (outline.color == 1)
-            {
-                transform.position = m_startPosition;
-            }
-            outline.color = 0;
+            transform.position = m_startPosition;
         }
+        ChangeOutlineColour(SELECTED_COLOUR);
 
         //if we deselected while changing angle...
         if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
@@ -285,43 +303,36 @@ public class ComponentInteraction : MonoBehaviour
         m_selected = false;
         m_rightClicked = false;
 
-        //for each outline script on this gameobject and its children
-        foreach (var outline in m_outlineController)
-        {
-            //disable outline drawing
-            outline.eraseRenderer = true;
-        }
+        //erase the renderer from outline as we unselected
+        EnableOutlineRenderer(DISABLE_RENDERER);
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (m_selected)
-        {
-            foreach (var outline in m_outlineController)
-            {
-                outline.color = 0;
-            }
-        }
-    }
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (m_selected)
+    //    {
+    //        ChangeOutlineColour(SELECTED_COLOUR);
+    //    }
+    //}
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (m_selected)
-        {
-            foreach (var outline in m_outlineController)
-            {
-                outline.color = 1;
-            }
-        }
-    }
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    if (m_selected)
+    //    {
+    //        foreach (var outline in m_outlineController)
+    //        {
+    //            outline.color = 1;
+    //        }
+    //    }
+    //}
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("GameController"))
-        {
-            m_spawnedOnGameController = true;
-        }
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("GameController"))
+    //    {
+    //        m_spawnedOnGameController = true;
+    //    }
+    //}
 
     private void HandleComponentAlteration()
     {
@@ -342,6 +353,7 @@ public class ComponentInteraction : MonoBehaviour
         {
             HandleBalloon();
         }
+        //fan and cannon work very similarly
         else if (tag == "Fan" || tag == "Cannon")
         {
             //reuse this bool for rotating fan and cannon
@@ -353,16 +365,12 @@ public class ComponentInteraction : MonoBehaviour
             }
             else
             {
-                foreach (var outline in m_outlineController)
+                if (IsOutlineColour(OBSTRUCTED_COLOUR))
                 {
-                    if (outline.color == 1)
-                    {
-                        transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
-                        outline.color = 0;
-                    }
+                    ChangeOutlineColour(SELECTED_COLOUR);
+                    transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
                 }
             }
-
         }
         else if (tag == "WreckingBall")
         {
@@ -491,6 +499,21 @@ public class ComponentInteraction : MonoBehaviour
     public void Init()
     {
         m_init = false;
+
+        m_overlapArray = new Collider2D[100];
+        m_overlapFilter = new ContactFilter2D();
+        m_overlapFilter.SetDepth(0.0f, 2.0f);
+
+        //if (gameObject.CompareTag("Fan"))
+        //{
+        //    var childrenColliders = gameObject.GetComponentsInChildren<Collider2D>();
+
+        //    foreach (var collider in childrenColliders)
+        //    {
+        //        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider);
+        //    }
+        //}
+
         m_spawnedOnGameController = false;
         m_gameControllerDrag = false;
 
@@ -516,20 +539,114 @@ public class ComponentInteraction : MonoBehaviour
     /// <summary>
     /// Returns true if gameObject is currently overlapping with a different collider
     /// </summary>
-    /// <returns></returns>
+    /// <returns>bool</returns>
     private bool ColliderOverlaps()
     {
-        ContactFilter2D newContactFilter = new ContactFilter2D();
-        newContactFilter.SetDepth(0.0f, 2.0f);
-        newContactFilter.useDepth = true;
-        Collider2D[] hitNodes = new Collider2D[10];
-        Physics2D.OverlapCollider(gameObject.GetComponent<Collider2D>(), newContactFilter, hitNodes);
+        Array.Clear(m_overlapArray, 0, m_overlapArray.Length);
 
-        foreach (var collider in hitNodes)
+        var childrenColliders = gameObject.GetComponentsInChildren<Collider2D>();
+        //foreach (var collider in childrenColliders)
+        //{
+        //    if (collider != GetComponent<Collider2D>())
+        //    {
+        //        Physics2D.IgnoreCollision(collider, GetComponent<Collider2D>());
+        //    }
+        //}
+
+        //if (CompareTag("Fan"))
+        //{
+        //    LayerMask mask = LayerMask.GetMask("FanDragTrigger");
+        //    m_overlapFilter.layerMask = mask;
+        //}
+
+        if (CompareTag("Fan"))
+        {
+            List<Collider2D> childList = new List<Collider2D>();
+
+            foreach (var collider in childrenColliders)
+            {
+                //change edge collider on fanHead to polygon?
+                if (collider != GetComponent<Collider2D>() && !collider.isTrigger)
+                {
+                    Collider2D[] tempArr = new Collider2D[100]; 
+                    Physics2D.OverlapCollider(collider, m_overlapFilter, tempArr);
+
+                    foreach (var tempCol in tempArr)
+                    {
+                        if (tempCol != null)
+                        {
+                            childList.Add(tempCol); 
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            m_overlapArray = childList.ToArray();
+        }
+        else
+        {
+            Physics2D.OverlapCollider(GetComponent<Collider2D>(), m_overlapFilter, m_overlapArray);
+        }
+
+        foreach (var collider in m_overlapArray)
         {
             if (collider != null)
             {
+                if (collider.transform.root.gameObject == gameObject)
+                {
+                    continue;
+                }
                 return true;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return false;
+    }
+
+    private void ChangeOutlineColour(int t_colour)
+    {
+        if (m_outlineController != null)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.color = t_colour;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Function to enable/disable outline renderer.
+    /// t_erase == true -> disables renderer
+    /// t_erase == false -> enables renderer
+    /// </summary>
+    /// <param name="t_erase">Value to set the outline renderer</param>
+    private void EnableOutlineRenderer(bool t_erase)
+    {
+        if (m_outlineController != null)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                outline.eraseRenderer = t_erase;
+            }
+        }
+    }
+
+    private bool IsOutlineColour(int t_colour)
+    {
+        if (m_outlineController != null)
+        {
+            foreach (var outline in m_outlineController)
+            {
+                if (outline.color == t_colour)
+                {
+                    return true;
+                }
             }
         }
         return false;
