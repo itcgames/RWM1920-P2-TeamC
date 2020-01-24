@@ -573,6 +573,11 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
+    public bool GetMoveNotRotate()
+    {
+        return moveNotRotate;
+    }
+
     public bool GetSelected()
     {
         return m_selected;
