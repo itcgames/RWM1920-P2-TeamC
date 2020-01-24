@@ -10,8 +10,11 @@ public class GameController : MonoBehaviour
     public GameObject m_stopSimButton;
     private bool m_wreckingBallReset;
 
+    private List<GameObject> m_addedBalloons;
+
     void Start()
     {
+        m_addedBalloons = new List<GameObject>();
         m_wreckingBallReset = false;
         DisableObjects();
     }
@@ -33,11 +36,34 @@ public class GameController : MonoBehaviour
 
     public void StartSim()
     {
+        m_addedBalloons.Clear();
+        var balloons = GameObject.FindGameObjectsWithTag("Balloon");
+
+        foreach (var balloon in balloons)
+        {
+            var newBalloon = Instantiate(balloon);
+            newBalloon.name = "UserPlacedBalloon";
+            newBalloon.SetActive(false);
+            m_addedBalloons.Add(newBalloon);
+        }
+
         m_isSimRunning = true;
     }
     public void StopSim()
     {
         GameObject.FindGameObjectWithTag("Start").GetComponent<StartPointScript>().Reset();
+
+        var oldBalloons = GameObject.FindGameObjectsWithTag("Balloon");
+        for (int i = oldBalloons.Length - 1; i >= 0; i--)
+        {
+            Destroy(oldBalloons[i]);
+        }
+        foreach (var newBalloon in m_addedBalloons)
+        {
+            newBalloon.SetActive(true);
+        }
+        m_addedBalloons.Clear();
+
         m_isSimRunning = false;
     }
     public bool IsSimRunning()

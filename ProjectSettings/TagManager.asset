@@ -18,6 +18,7 @@ TagManager:
   - HingeTwo
   - HingeThree
   - HingeFour
+  - TestCube
   layers:
   - Default
   - TransparentFX
@@ -28,8 +29,8 @@ TagManager:
   - 
   - 
   - Player
-  - Test
-  - 
+  - FanDragTrigger
+  - FanCollision
   - 
   - 
   - 
