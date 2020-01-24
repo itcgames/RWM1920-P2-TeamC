@@ -96,9 +96,9 @@ namespace cakeslice
 
         Material GetMaterialFromID(int ID)
         {
-            if(ID == 0)
+            if (ID == 0)
                 return outline1Material;
-            else if(ID == 1)
+            else if (ID == 1)
                 return outline2Material;
             else
                 return outline3Material;

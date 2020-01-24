@@ -27,6 +27,15 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
             ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
             placedObjectScript.Init();
+            
+            var components =FindObjectsOfType<ComponentInteraction>();
+            foreach (var component in components)
+            {
+                if(component.GetSelected())
+                {
+                    component.SetSelected(false);
+                }
+            }
             placedObjectScript.SelectFromGameController();
         }
     }

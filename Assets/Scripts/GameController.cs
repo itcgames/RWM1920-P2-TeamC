@@ -43,6 +43,8 @@ public class GameController : MonoBehaviour
         {
             var newBalloon = Instantiate(balloon);
             newBalloon.name = "UserPlacedBalloon";
+            newBalloon.GetComponent<ComponentInteraction>().Init();
+            newBalloon.GetComponent<ComponentInteraction>().SetSelected(false);
             newBalloon.SetActive(false);
             m_addedBalloons.Add(newBalloon);
         }
@@ -148,5 +150,24 @@ public class GameController : MonoBehaviour
         }
         m_wreckingBallReset = true;
     }
-    
+
+
+    private void OnMouseOver()
+    {
+        var componenets = FindObjectsOfType<ComponentInteraction>();
+        foreach (var component in componenets)
+        {
+            component.SetUpdateBallonAnchor(false);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        var componenets = FindObjectsOfType<ComponentInteraction>();
+        foreach (var component in componenets)
+        {
+            component.SetUpdateBallonAnchor(true);
+        }
+    }
+
 }
