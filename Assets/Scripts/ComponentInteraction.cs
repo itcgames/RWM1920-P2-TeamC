@@ -489,6 +489,19 @@ public class ComponentInteraction : MonoBehaviour
                 fanHead.GetComponent<cakeslice.Outline>().color = 0;
             }
         }
+        else if(CompareTag("Cannon"))
+        {
+            if (gameObject.transform.Find("Pivot").transform.Find("Barrel").GetComponent<BoxCollider2D>().IsTouchingLayers())
+            {
+                GameObject barrel = transform.Find("Pivot").transform.Find("Barrel").gameObject;
+                barrel.GetComponent<cakeslice.Outline>().color = 1;
+            }
+            else if (gameObject.GetComponent<cakeslice.Outline>().color != 1)
+            {
+                GameObject barrel = transform.Find("Pivot").transform.Find("Barrel").gameObject;
+                barrel.GetComponent<cakeslice.Outline>().color = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -643,7 +656,7 @@ public class ComponentInteraction : MonoBehaviour
 
         var childrenColliders = gameObject.GetComponentsInChildren<Collider2D>();
 
-        if (CompareTag("Fan"))
+        if (CompareTag("Fan") || CompareTag("Cannon"))
         {
             List<Collider2D> childList = new List<Collider2D>();
 
@@ -667,6 +680,7 @@ public class ComponentInteraction : MonoBehaviour
                     }
                 }
             }
+
 
             //add items from the childList to the overLap array
             for (int i = 0; i < childList.Count; i++)

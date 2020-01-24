@@ -10,7 +10,12 @@ PrefabInstance:
     - target: {fileID: 6185312431159772108, guid: de9de6a70a502b94f9f3d78c9660d67c,
         type: 3}
       propertyPath: m_Name
-      value: PortalA
+      value: PortalA Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6185312431159772108, guid: de9de6a70a502b94f9f3d78c9660d67c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Portal
       objectReference: {fileID: 0}
     - target: {fileID: 6185312431159772099, guid: de9de6a70a502b94f9f3d78c9660d67c,
         type: 3}

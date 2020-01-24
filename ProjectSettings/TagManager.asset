@@ -19,6 +19,7 @@ TagManager:
   - HingeThree
   - HingeFour
   - TestCube
+  - Portal
   layers:
   - Default
   - TransparentFX
