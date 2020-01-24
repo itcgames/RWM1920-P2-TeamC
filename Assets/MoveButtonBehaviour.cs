@@ -24,7 +24,17 @@ public class MoveButtonBehaviour : MonoBehaviour
     private bool m_isActive;
     // bool that is ued to switch between main and alterante sprite
     private bool m_isMainSprite;
-   
+
+    [Tooltip("Color For The Move Sprite")]
+    public Color mainSpriteColour;
+    [Tooltip("Color For The Alternate Functionality Sprite")]
+    public Color alternateSpriteColour;
+
+    private void Start()
+    {
+        m_isMainSprite = true;
+    }
+
     void Update()
     {
         m_isActive = false;
@@ -36,10 +46,15 @@ public class MoveButtonBehaviour : MonoBehaviour
                 m_isActive = true;
             }
         }
-        if (m_isActive && GetComponent<SpriteRenderer>().sprite != disabledSprite)
+        if (!m_isActive && GetComponent<SpriteRenderer>().sprite != disabledSprite)
         {
             GetComponent<SpriteRenderer>().sprite = m_isMainSprite ? disabledSprite : disabledAlternateSprite;
         }
+        else if (m_isActive && GetComponent<SpriteRenderer>().sprite != unpressedSprite)
+        {
+            GetComponent<SpriteRenderer>().sprite = m_isMainSprite ? unpressedSprite : unpressedAlternateSprite;
+        }
+        GetComponent<SpriteRenderer>().color = m_isMainSprite ? mainSpriteColour : alternateSpriteColour;
     }
 
     private void OnMouseDown()

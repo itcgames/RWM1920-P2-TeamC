@@ -23,14 +23,18 @@ public class ButtonClickBehaviour : MonoBehaviour
         var components = FindObjectsOfType<ComponentInteraction>();
         foreach (var component in components)
         {
-            if(component.GetSelected())
+            if (component.GetSelected())
             {
                 m_isActive = true;
             }
         }
-        if(m_isActive && GetComponent<SpriteRenderer>().sprite != disabledSprite)
+        if (!m_isActive && GetComponent<SpriteRenderer>().sprite != disabledSprite)
         {
             GetComponent<SpriteRenderer>().sprite = disabledSprite;
+        }
+        else if(m_isActive && GetComponent<SpriteRenderer>().sprite != unpressedSprite)
+        {
+            GetComponent<SpriteRenderer>().sprite = unpressedSprite;
         }
     }
     private void OnMouseDown()
