@@ -30,10 +30,9 @@ public class ComponentInteraction : MonoBehaviour
     private float m_originalAngle;
     private Vector2 m_mouseDragStart;
 
-    private Vector3 m_startPosition;
+    private Vector3 m_lastPos;
     private GameController m_controller;
 
-    private bool m_gameControllerDrag;
     private bool m_init = true;
     private Collider2D[] m_overlapArray;
     private Vector3 m_spawnPos;
@@ -51,113 +50,144 @@ public class ComponentInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if selected and GameController is not null
         if (m_selected && m_controller != null)
         {
+            //set selected to false if sim is running
             m_selected = !m_controller.IsSimRunning();
+            //check if selected was set to false
             if (!m_selected)
             {
+                //if so, unselect
                 UnselectComponent();
             }
         }
+        //if selected
         if (m_selected)
         {
-            // long click effect (consider 
+            // long click/drag mouse
             if (m_dragged || m_click && (Time.time - m_mouseDownTime) >= LONG_CLICK_TIME)
             {
                 MoveComponent();
             }
 
+            //if holding down RMB
             if (Input.GetMouseButtonDown(1))
             {
+                //alter component depending on component typ
                 HandleComponentAlteration();
             }
+
+            //if we right clicked
             if (m_rightClicked)
             {
+                //check if this gameObject has a Fan or Cannon tag
                 if (CompareTag("Fan") || CompareTag("Cannon"))
                 {
+                    //fan and cannon can use same rotate function
                     RotateTowardsMouse();
                 }
+                //if this gameObject has a WreckingBall tag
                 else if (CompareTag("WreckingBall"))
                 {
+                    //handle rotating differently
                     RotateAllTowardsMouse();
                 }
             }
         }
 
+        //if we clicked AND didnt click on component AND are selected
         if (Input.GetMouseButtonDown(0) && !m_click && m_selected)
         {
+            //means we clicked off of the component, there unselect
             UnselectComponent();
         }
 
+        //check if this gameObject's colliders are overlapping with anything
         if (!ColliderOverlaps())
         {
+            //if not colliding we can change the outline colour
+            //and if we unselected, then outline is not visible
             ChangeOutlineColour(SELECTED_COLOUR);
-            m_startPosition = transform.position;
+            //update last position as we are not colliding
+            m_lastPos = transform.position;
         }
+        //otherwise we are colliding with something
         else
         {
+            //change colour to Obstructed colour
             ChangeOutlineColour(OBSTRUCTED_COLOUR);
         }
     }
 
     void MoveComponent()
     {
+        //if this gameObject has a rigidBody
         if (m_rb2 != null)
         {
+            //make the rigidBody asleep temporarily
             m_rb2.Sleep();
+            //if it is NOT a static body
             if (m_rb2.bodyType != RigidbodyType2D.Static)
             {
+                //reset velocity
                 m_rb2.velocity = Vector2.zero;
+                //freeze rotation
                 m_rb2.freezeRotation = true;
+                //reset angular velocity
                 m_rb2.angularVelocity = 0.0f;
             }
         }
 
-        Vector2 mousePos;
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
+        //get mouse position in game world space
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //move the gameObject to the mouse
         gameObject.transform.position = new Vector3(mousePos.x - m_clickStartPosX, mousePos.y - m_clickStartPosY, 0.0f);
     }
 
     private void OnMouseDrag()
     {
+        //check if time since mouse LMB is smaller than what we consider a Long Click
         if ((Time.time - m_mouseDownTime) < LONG_CLICK_TIME)
         {
+            //if we dragged long distance
             if (m_mouseDragStart.magnitude > 10000)
             {
                 m_mouseDragStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             }
-            if ((m_mouseDragStart - (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition)).magnitude > 0f)
+            //if drag start pos - currentMousePos is more than 0.0f
+            if ((m_mouseDragStart - (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition)).magnitude > 0.0f)
             {
-                //Debug.Log("mouse dragged");
                 //when object is being dragged by mouse, immiadiately consider it as a long click
                 m_dragged = true;
+                //and if this gameObecjt wasn't selected already, select it
                 if (!m_selected)
                 {
                     SelectComponent();
                 }
             }
         }
+        //otherwise we have a mouse long click, so if not selected
         else if (!m_selected)
         {
-            //Debug.Log("mouse long click");
+            //then select this gameObejct
             SelectComponent();
         }
     }
 
+    //if we hover over the object and RMB click
     private void OnMouseOver()
     {
-        //if we hover over the object and RMB click
+        //if this gameObject is NOT selected and we RMB
         if (!m_selected && Input.GetMouseButtonDown(1))
         {
-            //flip bool
+            //we have been rightClicked
             m_rightClicked = true;
         }
     }
 
     private void OnMouseDown()
     {
-        //Debug.Log("mouse down");
         //set time when we clicked to differiciate between short click and long click
         m_mouseDownTime = Time.time;
         SetClickStartPosOnObject();
@@ -169,15 +199,16 @@ public class ComponentInteraction : MonoBehaviour
         //if this object has a 2d rigidbody
         if (m_rb2 != null)
         {
-            //freeze it
+            //unfreeze it
             m_rb2.freezeRotation = false;
+            //and wake it up if asleep
             if (m_rb2.IsSleeping())
             {
                 m_rb2.WakeUp();
             }
         }
 
-        //if time LMB was pressed down is less than what we consider a long click do stuff
+        //if time LMB was pressed down for less than what we consider a long click do stuff
         if ((Time.time - m_mouseDownTime) < LONG_CLICK_TIME)
         {
             // short click effect here
@@ -196,51 +227,32 @@ public class ComponentInteraction : MonoBehaviour
         m_click = false;
         m_dragged = false;
         m_mouseDragStart = new Vector2(9999, 9999);
-
-        //if (!IsOutlineColour(OBSTRUCTED_COLOUR))
-        //{
-        //    m_startPosition = gameObject.transform.position;
-        //}
     }
 
+    /// <summary>
+    /// Function to Select this gameObject from a different script
+    /// </summary>
     public void SelectFromGameController()
     {
         SelectComponent();
-
-        m_gameControllerDrag = true;
     }
 
+    /// <summary>
+    /// Function to Unselect this gameObject from a different script with an extra step
+    /// </summary>
     public void UnselectFromGameController()
     {
-        //UnselectComponent();
-        m_gameControllerDrag = false;
-
+        //check if we are trying to unselect while colliding
         if (ColliderOverlaps())
         {
-            transform.position = m_startPosition;
+            //if we were colliding, move back to last position where we didnt collide
+            transform.position = m_lastPos;
         }
+        //if we move the gameObject back to component spawn location, delete this object
         if (transform.position == m_spawnPos)
         {
             Destroy(gameObject);
         }
-
-        //if (ColliderOverlaps())
-        //{
-        //    foreach (var collider in m_overlapArray)
-        //    {
-        //        if (collider != null)
-        //        {
-        //            if (collider.CompareTag("GameController"))
-        //            {
-        //                Destroy(gameObject);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            break;
-        //        }
-        //    }
-        //}
     }
 
     private void SelectComponent()
@@ -250,18 +262,22 @@ public class ComponentInteraction : MonoBehaviour
         //reset rightclick just in case
         m_rightClicked = false;
 
+        //make the outline visible
         EnableOutlineRenderer(ENABLE_RENDERER);
     }
 
     private void UnselectComponent()
     {
+        //if gameObject is currently colliding
         if (IsOutlineColour(OBSTRUCTED_COLOUR))
         {
-            transform.position = m_startPosition;
+            //move back to safe position
+            transform.position = m_lastPos;
         }
+        //if we were OBSTRUCTED_COLOUR we can go back to SELECTED_COLOUR
         ChangeOutlineColour(SELECTED_COLOUR);
 
-        //if we deselected while changing angle...
+        //if we unselected while changing angle...
         if ((CompareTag("Fan") || CompareTag("Cannon")) && m_rightClicked)
         {
             //change angle back to what it was before RMB click
@@ -307,10 +323,13 @@ public class ComponentInteraction : MonoBehaviour
             }
             else
             {
+                //if we're colliding
                 if (IsOutlineColour(OBSTRUCTED_COLOUR))
                 {
-                    ChangeOutlineColour(SELECTED_COLOUR);
+                    //move the rotating part back to safe location
                     transform.Find("Pivot").transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, m_originalAngle);
+                    //we can set the colour back to SELECTED_COLOUR as the object should be in a safe location
+                    ChangeOutlineColour(SELECTED_COLOUR);
                 }
             }
         }
@@ -336,13 +355,13 @@ public class ComponentInteraction : MonoBehaviour
         //get balloon's controller
         NewBalloonController balloon = gameObject.GetComponent<NewBalloonController>();
 
-        //find if any object with interactive script was clicked
+        //check if any object with interactive script was right clicked
         foreach (var comp in interactiveComps)
         {
-            //if it has...
+            //if it was...
             if (comp.m_rightClicked)
             {
-                //set anchor to that GameObject
+                //set anchor to that GameObject, with new anchor distance
                 balloon.SetAnchor(comp.gameObject, Vector3.Distance(comp.transform.position, balloon.transform.GetChild(0).position));
                 //reset that object's bool
                 comp.m_rightClicked = false;
@@ -355,7 +374,9 @@ public class ComponentInteraction : MonoBehaviour
         //get mouse pos
         Vector2 tempMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player.GetComponent<Collider2D>().OverlapPoint(tempMousePos))//If the collider overlaps the mouse coordinates
+
+        //If the collider overlaps the mouse coordinates
+        if (player.GetComponent<Collider2D>().OverlapPoint(tempMousePos))
         {
             //set anchor to the player
             balloon.SetAnchor(player, Vector3.Distance(player.transform.position, balloon.transform.GetChild(0).position));
@@ -394,6 +415,9 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Special magic function needed to rotate the wrecking ball
+    /// </summary>
     private void RotateAllTowardsMouse()
     {
         Transform anchor = transform.Find("AnchorPoint");
@@ -442,16 +466,17 @@ public class ComponentInteraction : MonoBehaviour
         m_clickStartPosY = mousePos.y - transform.localPosition.y;
     }
 
+    /// <summary>
+    /// Function to initialise this script
+    /// </summary>
     public void Init()
     {
         m_init = false;
         m_spawnPos = transform.position;
 
-        m_overlapArray = new Collider2D[100];
+        m_overlapArray = new Collider2D[10];
         m_overlapFilter = new ContactFilter2D();
         m_overlapFilter.SetDepth(0.0f, 2.0f);
-
-        m_gameControllerDrag = false;
 
         m_mouseDragStart = new Vector3(9999, 9999);
         if (GameObject.FindGameObjectWithTag("GameController") != null)
@@ -469,15 +494,16 @@ public class ComponentInteraction : MonoBehaviour
         m_rb2 = gameObject.GetComponent<Rigidbody2D>();
         m_click = false;
         m_dragged = false;
-        m_startPosition = transform.position;
+        m_lastPos = transform.position;
     }
 
     /// <summary>
-    /// Returns true if gameObject is currently overlapping with a different collider
+    /// Returns true if gameObject is currently overlapping with different colliders
     /// </summary>
-    /// <returns>bool</returns>
+    /// <returns>true if this gameObject's collider is overlapping</returns>
     private bool ColliderOverlaps()
     {
+        //force a physics objects to update transforms
         Physics2D.SyncTransforms();
 
         Array.Clear(m_overlapArray, 0, m_overlapArray.Length);
@@ -492,7 +518,7 @@ public class ComponentInteraction : MonoBehaviour
             {
                 if (collider != GetComponent<Collider2D>() && !collider.isTrigger)
                 {
-                    Collider2D[] tempArr = new Collider2D[100];
+                    Collider2D[] tempArr = new Collider2D[10];
                     Physics2D.OverlapCollider(collider, m_overlapFilter, tempArr);
 
                     foreach (var tempCol in tempArr)
@@ -508,7 +534,19 @@ public class ComponentInteraction : MonoBehaviour
                     }
                 }
             }
-            m_overlapArray = childList.ToArray();
+
+            //add items from the childList to the overLap array
+            for (int i = 0; i < childList.Count; i++)
+            {
+                if (i < m_overlapArray.Length)
+                {
+                    m_overlapArray[i] = childList[i];
+                }
+                else
+                {
+                    break;
+                }                
+            }
         }
         else
         {
@@ -533,6 +571,11 @@ public class ComponentInteraction : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Change colour of the outline to passed in colour
+    /// USE CONST INTS FROM THIS SCRIPT
+    /// </summary>
+    /// <param name="t_colour">colour to change the outline to</param>
     private void ChangeOutlineColour(int t_colour)
     {
         if (m_outlineController != null)
@@ -546,6 +589,7 @@ public class ComponentInteraction : MonoBehaviour
 
     /// <summary>
     /// Function to enable/disable outline renderer.
+    /// USE CONST BOOLS DECLARED FROM THIS SCRIPT
     /// t_erase == true -> disables renderer
     /// t_erase == false -> enables renderer
     /// </summary>
@@ -561,6 +605,12 @@ public class ComponentInteraction : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Function to check if the current colour of the outline matches the passed in colour
+    /// USE CONST INTS FROM THIS SCRIPT
+    /// </summary>
+    /// <param name="t_colour">colour to check</param>
+    /// <returns>true if colour matches</returns>
     private bool IsOutlineColour(int t_colour)
     {
         if (m_outlineController != null)
