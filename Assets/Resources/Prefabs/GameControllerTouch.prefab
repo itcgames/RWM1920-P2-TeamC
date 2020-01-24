@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1965106880609972631}
   - component: {fileID: 1965106880609972628}
   m_Layer: 0
-  m_Name: GameController 1
+  m_Name: GameControllerTouch
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1074855645129541708}
-  - {fileID: 5690059914384345404}
+  - {fileID: 5738609501336648550}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -115,7 +115,7 @@ PolygonCollider2D:
       - {x: -9.519961, y: -10.415}
       - {x: -8.187573, y: -9.082612}
       - {x: -7.7298827, y: -8.6757765}
---- !u!1001 &2477958463051826658
+--- !u!1001 &2537777979621849016
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -125,17 +125,17 @@ PrefabInstance:
     - target: {fileID: 7823981049451449568, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_Name
-      value: TouchInterface 1
+      value: TouchControlButtons
       objectReference: {fileID: 0}
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.4912
+      value: -7.5027
       objectReference: {fileID: 0}
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.252
+      value: -4.24
       objectReference: {fileID: 0}
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
@@ -185,40 +185,25 @@ PrefabInstance:
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.78239
+      value: 1.7068
       objectReference: {fileID: 0}
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.78239
+      value: 1.7068
       objectReference: {fileID: 0}
     - target: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.78239
-      objectReference: {fileID: 0}
-    - target: {fileID: 7823981049847703539, guid: 7f24892c73711aa40a33579be1239d5c,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 7823981050123382908, guid: 7f24892c73711aa40a33579be1239d5c,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 7823981050390450542, guid: 7f24892c73711aa40a33579be1239d5c,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 12
+      value: 1.7068
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f24892c73711aa40a33579be1239d5c, type: 3}
---- !u!4 &5690059914384345404 stripped
+--- !u!4 &5738609501336648550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7823981049451449566, guid: 7f24892c73711aa40a33579be1239d5c,
     type: 3}
-  m_PrefabInstance: {fileID: 2477958463051826658}
+  m_PrefabInstance: {fileID: 2537777979621849016}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3879293377301363556
 PrefabInstance:
