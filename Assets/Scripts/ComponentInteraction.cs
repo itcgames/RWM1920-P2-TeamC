@@ -143,7 +143,10 @@ public class ComponentInteraction : MonoBehaviour
             //change colour to Obstructed colour
             ChangeOutlineColour(OBSTRUCTED_COLOUR);
         }
-        FindObjectOfType<MoveButtonBehaviour>().UpdateSpriteType(moveNotRotate);
+        if (FindObjectOfType<MoveButtonBehaviour>() != null)
+        {
+            FindObjectOfType<MoveButtonBehaviour>().UpdateSpriteType(moveNotRotate);
+        }
     }
 
     void MoveComponent()
