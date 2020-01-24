@@ -75,6 +75,8 @@ public class GameController : MonoBehaviour
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
         GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
+        GameObject[] portals = GameObject.FindGameObjectsWithTag("Portal");
+        
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -88,12 +90,22 @@ public class GameController : MonoBehaviour
         {
             cannon.GetComponent<FireObject>().fireOnContact = false;
         }
+
+        foreach (GameObject portal in portals)
+        {
+            if (portal.transform.GetChild(0).name == "2D Collider")
+            {
+                portal.transform.GetChild(0).gameObject.SetActive(false);
+            }
+        }
     }
 
     public void EnableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
         GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
+        GameObject[] portals = GameObject.FindGameObjectsWithTag("Portal");
+        
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.None;
@@ -108,6 +120,14 @@ public class GameController : MonoBehaviour
         foreach (GameObject cannon in cannons)
         {
             cannon.GetComponent<FireObject>().fireOnContact = true;
+        }
+
+        foreach (GameObject portal in portals)
+        {
+            if (portal.transform.GetChild(0).name == "2D Collider")
+            {
+                portal.transform.GetChild(0).gameObject.SetActive(true);
+            }
         }
     }
 
