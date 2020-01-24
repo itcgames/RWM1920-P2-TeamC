@@ -878,7 +878,7 @@ GameObject:
   - component: {fileID: 7714344143640843838}
   - component: {fileID: 2783192502357405134}
   m_Layer: 0
-  m_Name: WreckingBall
+  m_Name: WreckingBall Variant
   m_TagString: WreckingBall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
