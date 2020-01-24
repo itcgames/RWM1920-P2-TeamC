@@ -28,6 +28,32 @@ MonoBehaviour:
   eraseRenderer: 1
   originalLayer: 0
   originalMaterials: []
+--- !u!61 &2278100616534851773
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2393171194179874849}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -1.9078064}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 15.37, y: 8.64}
+    newSize: {x: 15.37, y: 8.64}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 15.37, y: 4.8243876}
+  m_EdgeRadius: 0
 --- !u!114 &8285717738578175041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,6 +70,32 @@ MonoBehaviour:
   eraseRenderer: 1
   originalLayer: 0
   originalMaterials: []
+--- !u!61 &8820586817350355945
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2393171194538658118}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 24.77, y: 7.78}
+    newSize: {x: 24.77, y: 7.78}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 24.77, y: 7.78}
+  m_EdgeRadius: 0
 --- !u!1001 &7124985434858271813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51,6 +103,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4888455108209591396, guid: 52df8223d76bc514186d40811d7a2662,
+        type: 3}
+      propertyPath: m_Name
+      value: Cannon Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4888455108209591396, guid: 52df8223d76bc514186d40811d7a2662,
+        type: 3}
+      propertyPath: m_TagString
+      value: Cannon
+      objectReference: {fileID: 0}
     - target: {fileID: 1321677625506467347, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
       propertyPath: m_Name
@@ -90,16 +152,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4888455108209591396, guid: 52df8223d76bc514186d40811d7a2662,
-        type: 3}
-      propertyPath: m_Name
-      value: Cannon Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 4888455108209591396, guid: 52df8223d76bc514186d40811d7a2662,
-        type: 3}
-      propertyPath: m_TagString
-      value: Cannon
       objectReference: {fileID: 0}
     - target: {fileID: 4888455108209591400, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
@@ -159,7 +211,7 @@ PrefabInstance:
     - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
       propertyPath: m_IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
@@ -169,12 +221,22 @@ PrefabInstance:
     - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
       propertyPath: m_Offset.y
-      value: 0.5833988
+      value: 0.43532825
       objectReference: {fileID: 0}
     - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
       propertyPath: m_Size.y
-      value: 9.806798
+      value: 9.476839
+      objectReference: {fileID: 0}
+    - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: -0.027190685
+      objectReference: {fileID: 0}
+    - target: {fileID: 5189768238392485941, guid: 52df8223d76bc514186d40811d7a2662,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 15.501266
       objectReference: {fileID: 0}
     - target: {fileID: 8205428068707468428, guid: 52df8223d76bc514186d40811d7a2662,
         type: 3}
