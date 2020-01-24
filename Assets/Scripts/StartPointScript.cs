@@ -9,12 +9,12 @@ public class StartPointScript : MonoBehaviour
     {
         m_sprite = GetComponent<SpriteRenderer>();
         GameObject player = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
-        player.transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
+        player.transform.position = new Vector3(transform.position.x, transform.position.y);
     }
 
     public void Reset()
     {
-        GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(transform.position.x, transform.position.y - m_sprite.bounds.size.y);
+        GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(transform.position.x, transform.position.y);
         GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>().velocity = Vector3.zero;
     }
 }

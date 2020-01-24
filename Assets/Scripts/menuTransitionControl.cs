@@ -7,7 +7,10 @@ public class menuTransitionControl : MonoBehaviour
     private bool m_menuInView = true; //This bool controls if the menu buttons slide off screen. Used to remove the stuff to let the option screen come up.
     private Vector3 m_inView;
     private Vector3 m_outOfView;
-    private int m_offset = 800;
+    private float m_offset = Screen.height * 1.5f;
+    private Vector2 m_resolution;
+    private float m_transitionsRate = 20;//Move X  Pixels Per Second
+
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +42,7 @@ public class menuTransitionControl : MonoBehaviour
     {
         if (transform.position.y > m_outOfView.y)
         {
-            transform.position = transform.position - new Vector3(0, 20, 0);
+            transform.position = transform.position - new Vector3(0, m_transitionsRate, 0);
         }
     }
 
@@ -47,7 +50,7 @@ public class menuTransitionControl : MonoBehaviour
     {
         if (transform.position.y < m_inView.y)
         {
-            transform.position = transform.position + new Vector3(0, 20, 0);
+            transform.position = transform.position + new Vector3(0, m_transitionsRate, 0);
         }
     }
 }

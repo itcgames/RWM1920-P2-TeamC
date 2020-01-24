@@ -10,8 +10,11 @@ public class GameController : MonoBehaviour
     public GameObject m_stopSimButton;
     private bool m_wreckingBallReset;
 
+    private List<GameObject> m_addedBalloons;
+
     void Start()
     {
+        m_addedBalloons = new List<GameObject>();
         m_wreckingBallReset = false;
         DisableObjects();
     }
@@ -33,11 +36,36 @@ public class GameController : MonoBehaviour
 
     public void StartSim()
     {
+        m_addedBalloons.Clear();
+        var balloons = GameObject.FindGameObjectsWithTag("Balloon");
+
+        foreach (var balloon in balloons)
+        {
+            var newBalloon = Instantiate(balloon);
+            newBalloon.name = "UserPlacedBalloon";
+            newBalloon.GetComponent<ComponentInteraction>().Init();
+            newBalloon.GetComponent<ComponentInteraction>().SetSelected(false);
+            newBalloon.SetActive(false);
+            m_addedBalloons.Add(newBalloon);
+        }
+
         m_isSimRunning = true;
     }
     public void StopSim()
     {
         GameObject.FindGameObjectWithTag("Start").GetComponent<StartPointScript>().Reset();
+
+        var oldBalloons = GameObject.FindGameObjectsWithTag("Balloon");
+        for (int i = oldBalloons.Length - 1; i >= 0; i--)
+        {
+            Destroy(oldBalloons[i]);
+        }
+        foreach (var newBalloon in m_addedBalloons)
+        {
+            newBalloon.SetActive(true);
+        }
+        m_addedBalloons.Clear();
+
         m_isSimRunning = false;
     }
     public bool IsSimRunning()
@@ -48,6 +76,7 @@ public class GameController : MonoBehaviour
     public void DisableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -56,11 +85,17 @@ public class GameController : MonoBehaviour
         {
             ResetWreckingBalls();
         }
+
+        foreach(GameObject cannon in cannons)
+        {
+            cannon.GetComponent<FireObject>().fireOnContact = false;
+        }
     }
 
     public void EnableObjects()
     {
         Rigidbody2D[] rb = Rigidbody2D.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
+        GameObject[] cannons = GameObject.FindGameObjectsWithTag("Cannon");
         foreach (Rigidbody2D obj in rb)
         {
             obj.constraints = RigidbodyConstraints2D.None;
@@ -71,6 +106,11 @@ public class GameController : MonoBehaviour
             ball.transform.Find("AnchorPoint").GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
         }
         m_wreckingBallReset = false;
+
+        foreach (GameObject cannon in cannons)
+        {
+            cannon.GetComponent<FireObject>().fireOnContact = true;
+        }
     }
 
     private void ResetWreckingBalls()
@@ -110,5 +150,24 @@ public class GameController : MonoBehaviour
         }
         m_wreckingBallReset = true;
     }
-    
+
+
+    private void OnMouseOver()
+    {
+        var componenets = FindObjectsOfType<ComponentInteraction>();
+        foreach (var component in componenets)
+        {
+            component.SetUpdateBallonAnchor(false);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        var componenets = FindObjectsOfType<ComponentInteraction>();
+        foreach (var component in componenets)
+        {
+            component.SetUpdateBallonAnchor(true);
+        }
+    }
+
 }

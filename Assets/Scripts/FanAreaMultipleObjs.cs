@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class FanAreaMultipleObjs : MonoBehaviour
 {
+    private const float MAX_STRENGTH = 10.0f;
+    [Range(0.0f, MAX_STRENGTH)]
     public float strength;
     public Vector3 direction;
     public Vector3 size;
+
 
     protected Rigidbody2D rb;
 
@@ -17,6 +20,10 @@ public class FanAreaMultipleObjs : MonoBehaviour
         m_affectedObjects = new List<Rigidbody2D>();
         ParticleSystem.MainModule ps = gameObject.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
         ps.startSpeed = strength * size.x;
+
+        var audio = GetComponent<AudioSource>();
+        audio.volume = (strength / MAX_STRENGTH) * AudioListener.volume;
+        audio.Play();
     }
 
     // Update is called once per frame
@@ -30,9 +37,16 @@ public class FanAreaMultipleObjs : MonoBehaviour
         float newY = strength * Mathf.Sin(Mathf.Deg2Rad * transform.eulerAngles.z);
         direction = new Vector3(newX, newY, 0);
 
-        foreach (var item in m_affectedObjects)
+        for (int i = m_affectedObjects.Count - 1; i >= 0; i--)
         {
-            moveObject(item, direction, strength);
+            if (m_affectedObjects[i] == null)
+            {
+                m_affectedObjects.RemoveAt(i);
+            }
+            else
+            {
+                moveObject(m_affectedObjects[i], direction, strength);
+            }
         }
     }
 

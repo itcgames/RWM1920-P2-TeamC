@@ -74,8 +74,8 @@ public class MoveButtonBehaviour : MonoBehaviour
         }
     }
 
-    public void ToggleIsSpriteType()
+    public void UpdateSpriteType(bool t_isMove)
     {
-        m_isMainSprite = !m_isMainSprite;
+        m_isMainSprite = t_isMove;
     }
 }

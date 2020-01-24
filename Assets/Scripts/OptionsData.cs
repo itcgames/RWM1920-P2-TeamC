@@ -7,6 +7,7 @@ public class OptionsData
     private static float m_volume = 1;
     private static bool m_mute = false;
     private static bool m_volumeChanged = false;
+    private static bool m_showInstructions = true;
 
 
     public static float Volume
@@ -41,6 +42,18 @@ public class OptionsData
         set
         {
             m_volumeChanged = value;
+        }
+    }
+
+    public static bool SeenInstructions
+    {
+        get
+        {
+            return m_showInstructions;
+        }
+        set
+        {
+            m_showInstructions = value;
         }
     }
 

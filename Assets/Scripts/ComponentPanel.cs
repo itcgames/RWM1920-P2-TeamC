@@ -20,34 +20,42 @@ public class ComponentPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         if (!m_controller.IsSimRunning())
         {
-            m_placeObject = Instantiate(m_obj, this.transform.position, Quaternion.identity);
+            Vector3 spawnPos = transform.position;
+            spawnPos.z = 0;
+            m_placeObject = Instantiate(m_obj, spawnPos, Quaternion.identity);
             m_followPointer = true;
-            m_placeObject.GetComponent<Collider2D>().enabled = false; 
-            foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
+
+            ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
+            placedObjectScript.Init();
+            
+            var components =FindObjectsOfType<ComponentInteraction>();
+            foreach (var component in components)
             {
-                c.enabled = false;
+                if(component.GetSelected())
+                {
+                    component.SetSelected(false);
+                }
             }
+            placedObjectScript.SelectFromGameController();
         }
     }
 
     //Detect if clicks are no longer registering
     public void OnPointerUp(PointerEventData pointerEventData)
     {
-        m_placeObject.GetComponent<Collider2D>().enabled = true;
-        foreach (var c in m_placeObject.GetComponentsInChildren<Collider2D>())
-        {
-            c.enabled = true;
-        }
+        ComponentInteraction placedObjectScript = m_placeObject.GetComponent<ComponentInteraction>();
+        placedObjectScript.UnselectFromGameController();
+
         m_followPointer = false;
     }
 
     void Update()
     {
-        if(m_followPointer && m_placeObject != null)
+        if (m_followPointer && m_placeObject != null)
         {
             Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            newPosition.z = 1;
-            m_placeObject.transform.position = newPosition;
+            newPosition.z = 0;
+            m_placeObject.transform.position = newPosition;            
         }
     }
 }
