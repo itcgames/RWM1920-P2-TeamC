@@ -3,7 +3,8 @@
     "references": [
         "CakeSlice",
         "BalloonScripts",
-        "Scripts"
+        "Scripts",
+        "WormholePortalScripts"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

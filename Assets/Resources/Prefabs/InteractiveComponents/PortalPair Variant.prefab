@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PortalPair Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5590665864361018464, guid: da4d6f3ebfde5954a804e4773012cf66,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 5590665864361018465, guid: da4d6f3ebfde5954a804e4773012cf66,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -105,6 +110,21 @@ PrefabInstance:
     - target: {fileID: 5590665865494485054, guid: da4d6f3ebfde5954a804e4773012cf66,
         type: 3}
       propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5590665864746191639, guid: da4d6f3ebfde5954a804e4773012cf66,
+        type: 3}
+      propertyPath: m_TagString
+      value: Portal
+      objectReference: {fileID: 0}
+    - target: {fileID: 5590665865494485041, guid: da4d6f3ebfde5954a804e4773012cf66,
+        type: 3}
+      propertyPath: m_TagString
+      value: Portal
+      objectReference: {fileID: 0}
+    - target: {fileID: 5590665864746191637, guid: da4d6f3ebfde5954a804e4773012cf66,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
